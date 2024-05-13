@@ -1,0 +1,1 @@
+Prije nego sto pokrenes sql PROMIJENI PUTANJU SLIKA (lako mozes naci gdje su jer se zove procedura), jer na svakom racunalu ce biti drugacije.
