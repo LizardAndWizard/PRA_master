@@ -1,99 +1,99 @@
-﻿create database PRA_Autoskola COLLATE Croatian_CI_AS
+﻿create database PRA_Driving_School COLLATE Croatian_CI_AS
 go
 
-use PRA_Autoskola
+use PRA_Driving_School
 go
 
-create table Osoba (
-    IDOsoba int primary key identity (1, 1),
-    Ime nvarchar(50) not null,
-    Prezime varchar(50) not null,
+create table Person (
+    IDPerson int primary key identity (1, 1),
+    FirstName nvarchar(50) not null,
+    Lastname varchar(50) not null,
     Email nvarchar(50) not null,
-    Lozinka nvarchar(255) not null
+    [Password] nvarchar(255) not null
 );
 go
 
-create table Marka (
-    IDMarka int primary key identity (1, 1),
-    Naziv nvarchar(50) not null
+create table Brand (
+    IDBrand int primary key identity (1, 1),
+    [Name] nvarchar(50) not null
 );
 go
 
 create table Model (
     IDModel int primary key identity (1, 1),
-    Naziv nvarchar(50) not null,
-	MarkaID int foreign key references Marka(IDMarka) not null
+    [Name] nvarchar(50) not null,
+	BrandID int foreign key references Brand(IDBrand) not null
 );
 go
 
-create table Kategorija (
-    IDKategorije int primary key identity (1, 1),
-    Naziv nvarchar(50) not null
+create table Category (
+    IDCategory int primary key identity (1, 1),
+    [Name] nvarchar(50) not null
 );
 go
 
-create table Boja (
-    IDBoje int primary key identity (1, 1),
-    Naziv nvarchar(50) not null
+create table Colour (
+    IDColour int primary key identity (1, 1),
+    [Name] nvarchar(50) not null
 );
 go
 
-create table Vozilo (
-    IDVozila int primary key identity (1, 1),
-    BojaID int foreign key references Boja(IDBoje) not null,
-	KategorijaID int foreign key references Kategorija(IDKategorije) not null,
+create table Vehicle (
+    IDVehicle int primary key identity (1, 1),
+    ColourID int foreign key references Colour(IDColour) not null,
+	CategoryID int foreign key references Category(IDCategory) not null,
 	ModelID int foreign key references Model(IDModel) not null,
-	Slika varbinary(max)
+	Picture varbinary(max)
 );
 go
 
-create table Instruktor (
-    IDInstruktora int primary key identity (1, 1),
-    OsobaID int foreign key references Osoba(IDOsoba) not null,
-	VoziloID int foreign key references Vozilo(IDVozila) not null
+create table Instructor (
+    IDInstructor int primary key identity (1, 1),
+    PersonID int foreign key references Person(IDPerson) not null,
+	VehicleID int foreign key references Vehicle(IDVehicle) not null
 );
 go
 
-create table Polaznik (
+create table Student (
     OIB char(11) primary key,
-    OsobaID int foreign key references Osoba(IDOsoba) unique not null,
-	OdvozenoSati int default 0
+    PersonID int foreign key references Person(IDPerson) unique not null,
+	HoursDriven int default 0
 );
 go
 
-create table Recenzija (
-    IDRecenzije int primary key identity (1, 1),
-    PolaznikID char(11) foreign key references Polaznik(OIB) not null,
-	InstruktorID int foreign key references Instruktor(IDInstruktora) not null,
-	Ocjena int not null,
-	Komentar nvarchar(max)
+create table Review (
+    IDReview int primary key identity (1, 1),
+    StudentID char(11) foreign key references Student(OIB) not null,
+	InstructorID int foreign key references Instructor(IDInstructor) not null,
+	Grade int not null,
+	Comment nvarchar(max)
 );
 go
 
-create table Stanje (
-    IDStanja int primary key identity (1, 1),
-    Naziv nvarchar(50) not null
+create table [State] (
+    IDState int primary key identity (1, 1),
+    [Name] nvarchar(50) not null
 );
 go
 
-create table Rezervacija (
-    IDRezervacije int primary key identity (1, 1),
-    PolaznikID char(11) foreign key references Polaznik(OIB) not null,
-	InstruktorID int foreign key references Instruktor(IDInstruktora) not null,
-	StanjeID int foreign key references Stanje(IDStanja) default 3 not null,
-	Pocetak datetime not null,
-	Zavrsetak datetime not null
+create table Rezervation (
+    IDRezervation int primary key identity (1, 1),
+    StudentID char(11) foreign key references Student(OIB) not null,
+	InstructorID int foreign key references Instructor(IDInstructor) not null,
+	StateID int foreign key references [State](IDState) default 3 not null,
+	StartDate datetime not null,
+	EndDate datetime not null
 );
 go
 
-create table Termin (
-    IDTermina int primary key identity (1, 1),
-    RezrvacijaID int foreign key references Rezervacija(IDRezervacije) not null,
-	Obradeno bit default 0
+create table TimeSlot (
+    IDTimeSlot int primary key identity (1, 1),
+    RezervationID int foreign key references Rezervation(IDRezervation) not null,
+	Done bit default 0
 );
 go
 
-insert into Boja(Naziv)
+insert into Colour([Name])
 values 
 ('Crna'),
 ('Bijela'),
@@ -106,7 +106,7 @@ values
 ('Smeđa'),
 ('Ljubičasta');
 
-insert into Kategorija(Naziv)
+insert into Category([Name])
 values 
 ('AM'),
 ('A1'),
@@ -127,7 +127,7 @@ values
 ('G'),
 ('H');
 
-insert into Marka(Naziv)
+insert into Brand([Name])
 values 
 ('Audi'),
 ('BMW'),
@@ -140,7 +140,7 @@ values
 ('Tesla'),
 ('Volkswagen');
 
-insert into Model(Naziv, MarkaID)
+insert into Model([Name], BrandID)
 values 
 ('A4', 1),
 ('M4', 2),
@@ -153,37 +153,38 @@ values
 ('Model 2', 9),
 ('Beetle', 10);
 
-insert into Stanje(Naziv)
+insert into State([Name])
 values 
 ('APPROVED'),
 ('CANCELLED'),
 ('PENDING');
 
-select * from model
-
 go
-create or alter proc CreateVozilo
-	@Boja int,
-	@Kategorija int,
+create or alter proc CreateVehicle
+	@Colour int,
+	@Category int,
 	@Model int,
-	@PutanjaSlike nvarchar(500)
+	@PicPath nvarchar(500)
 as
 	declare @tsql nvarchar(max)
-	SET @tsql = 'insert into Vozilo(BojaID, KategorijaID, ModelID, Slika) ' +
-               ' SELECT ' + '''' + cast(@Boja as varchar(10)) + '''' + ',' + '''' + cast(@Kategorija as varchar(10)) + '''' + ',' + '''' + cast(@Model as varchar(10))  + '''' + ', * ' + 
-               'FROM Openrowset( Bulk ' + '''' + @PutanjaSlike + '''' + ', Single_Blob) as img'
+	SET @tsql = 'insert into Vehicle(ColourID, CategoryID, ModelID, Picture) ' +
+               ' SELECT ' + ''''
+			   + cast(@Colour as varchar(10)) + '''' + ',' + ''''
+			   + cast(@Category as varchar(10)) + '''' + ',' + ''''
+			   + cast(@Model as varchar(10))  + '''' + ', * ' + 
+               'FROM Openrowset( Bulk ' + '''' + @PicPath + '''' + ', Single_Blob) as img'
     EXEC (@tsql)
 go
 
-exec CreateVozilo 1, 6, 3, 'C:\Temp\PRA_slike\Citroen_C3.jpg'
-exec CreateVozilo 4, 6, 4, 'C:\Temp\PRA_slike\Fiat_500.jpg'
-exec CreateVozilo 6, 6, 6, 'C:\Temp\PRA_slike\Honda_Civic.jpg'
-exec CreateVozilo 1, 4, 8, 'C:\Temp\PRA_slike\Honda_CB1000R.jpg'
-exec CreateVozilo 5, 4, 9, 'C:\Temp\PRA_slike\Tesla_Model_2.jpg'
-exec CreateVozilo 2, 4, 10, 'C:\Temp\PRA_slike\VW_Beetle.jpg'
+exec CreateVehicle 1, 6, 3, '...\Citroen_C3.jpg'
+exec CreateVehicle 4, 6, 4, '...\Temp\PRA_slike\Fiat_500.jpg'
+exec CreateVehicle 6, 6, 6, '...\Temp\PRA_slike\Honda_Civic.jpg'
+exec CreateVehicle 1, 4, 8, '...\Temp\PRA_slike\Honda_CB1000R.jpg'
+exec CreateVehicle 5, 4, 9, '...\Temp\PRA_slike\Tesla_Model_2.jpg'
+exec CreateVehicle 2, 4, 10, '...\Temp\PRA_slike\VW_Beetle.jpg'
 go
 
-insert into Osoba(Ime, Prezime, Email, Lozinka)
+insert into Person(FirstName, Lastname, Email, [Password])
 values 
 ('Pero', 'Perić', 'pp@gmail.com', 'P3roM4j5t0r'),
 ('Iva', 'Ivić', 'iiviich@gmail.com', 'BejbiLazanja'),
@@ -198,7 +199,7 @@ values
 ('Srđan', 'Dragojević', 'srdjo@gmail.com', 'LepaSelaLepoGore');
 go
 
-insert into Polaznik(OIB, OsobaID, OdvozenoSati)
+insert into Student(OIB, PersonID, HoursDriven)
 values 
 ('12345678901', 5, 0),
 ('23469547885', 8, 12),
@@ -210,21 +211,21 @@ values
 ('28466969468', 10, 13);
 go
 
-insert into Instruktor(OsobaID, VoziloID)
+insert into Instructor(PersonID, VehicleID)
 values 
 (3, 1),
 (7, 4),
 (11, 6);
 go
 
-insert into Recenzija(PolaznikID, InstruktorID, Ocjena, Komentar)
+insert into Review(StudentID, InstructorID, Grade, Comment)
 values
 ('12345678901', 1, 1, 'Nije se pojavio na dogovoreno vrijeme i ne mogu se s njim dogovoriti za sljedeci termin.'),
 ('95738396078', 3, 5, null),
 ('12345678901',2, 5, 'Dobar momak. Smiren i korektan. Uvijek ce ti napomenuti ako napravis neku gresku pa dosta naucis.');
 go
 
-insert into Rezervacija(PolaznikID, InstruktorID, StanjeID, Pocetak, Zavrsetak)
+insert into Rezervation(StudentID, InstructorID, StateID, StartDate, EndDate)
 values
 ('12345678901', 2, 1, '2024-6-1 12:30', '2024-6-1 13:45'),
 ('28466969468', 1, 2, '2024-6-7 10:00', '2024-6-7 11:30'),
@@ -234,3 +235,15 @@ values
 ('23469547885', 3, 3, '2024-6-7 18:30', '2024-6-1 19:15');
 go
 
+select * from Person
+select * from Student
+select * from Instructor
+select * from Vehicle
+select * from Colour
+select * from Model
+select * from Review
+select * from Rezervation
+select * from TimeSlot
+select * from [State]
+select * from Brand
+select * from Category
