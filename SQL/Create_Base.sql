@@ -9,7 +9,8 @@ create table Person (
     FirstName nvarchar(50) not null,
     Lastname varchar(50) not null,
     Email nvarchar(50) not null,
-    [Password] nvarchar(255) not null
+    PswdHash nvarchar(255) not null,
+	PswSalt nvarchar(255) not null
 );
 go
 
@@ -177,26 +178,26 @@ as
 go
 
 exec CreateVehicle 1, 6, 3, '...\Citroen_C3.jpg'
-exec CreateVehicle 4, 6, 4, '...\Temp\PRA_slike\Fiat_500.jpg'
-exec CreateVehicle 6, 6, 6, '...\Temp\PRA_slike\Honda_Civic.jpg'
-exec CreateVehicle 1, 4, 8, '...\Temp\PRA_slike\Honda_CB1000R.jpg'
-exec CreateVehicle 5, 4, 9, '...\Temp\PRA_slike\Tesla_Model_2.jpg'
-exec CreateVehicle 2, 4, 10, '...\Temp\PRA_slike\VW_Beetle.jpg'
+exec CreateVehicle 4, 6, 4, '...\Fiat_500.jpg'
+exec CreateVehicle 6, 6, 6, '...\Honda_Civic.jpg'
+exec CreateVehicle 1, 4, 8, '...\Honda_CB1000R.jpg'
+exec CreateVehicle 5, 6, 9, '...\Tesla_Model_2.jpg'
+exec CreateVehicle 2, 6, 10, '...\VW_Beetle.jpg'
 go
 
-insert into Person(FirstName, Lastname, Email, [Password])
+insert into Person(FirstName, Lastname, Email, PswdHash, PswSalt)
 values 
-('Pero', 'Perić', 'pp@gmail.com', 'P3roM4j5t0r'),
-('Iva', 'Ivić', 'iiviich@gmail.com', 'BejbiLazanja'),
-('Marin', 'marić', 'mar.mar@gmail.com', 'Pa$$w0rd'),
-('Bogo', 'Moljak', 'bogo.moljka@hotmail.com', 'NAJboljiDoktor'),
-('Florijan', 'Gavran', 'gavranov.let@gmail.com', 'KadCeRucakNecuJogurt'),
-('Veljko', 'Kunić', 'v.kunich@gmail.com', 'zapravoNajboljiDoktor'),
-('Miško', 'Krstić', 'misho.kr@outlook.com', 'TkoToTamoPeva'),
-('Laki', 'Topalović', 'laki.luk@gmail.com', 'MaratonciTrcePocasnikrug'),
-('Petar', 'Cvetković', 'petar.cvijet@gmail.com', 'Ljeto68'),
-('Dušan', 'Kovačević', 'dus.kov@gmail.com', 'Podzemlje'),
-('Srđan', 'Dragojević', 'srdjo@gmail.com', 'LepaSelaLepoGore');
+('Pero', 'Perić', 'pp@gmail.com', 'P3roM4j5t0r', 'salt'),
+('Iva', 'Ivić', 'iiviich@gmail.com', 'BejbiLazanja', 'salt'),
+('Marin', 'Marić', 'mar.mar@gmail.com', 'Pa$$w0rd', 'salt'),
+('Bogo', 'Moljak', 'bogo.moljka@hotmail.com', 'NAJboljiDoktor', 'salt'),
+('Florijan', 'Gavran', 'gavranov.let@gmail.com', 'KadCeRucakNecuJogurt', 'salt'),
+('Veljko', 'Kunić', 'v.kunich@gmail.com', 'zapravoNajboljiDoktor', 'salt'),
+('Miško', 'Krstić', 'misho.kr@outlook.com', 'TkoToTamoPeva', 'salt'),
+('Laki', 'Topalović', 'laki.luk@gmail.com', 'MaratonciTrcePocasnikrug', 'salt'),
+('Petar', 'Cvetković', 'petar.cvijet@gmail.com', 'Ljeto68', 'salt'),
+('Dušan', 'Kovačević', 'dus.kov@gmail.com', 'Podzemlje', 'salt'),
+('Srđan', 'Dragojević', 'srdjo@gmail.com', 'LepaSelaLepoGore', 'salt');
 go
 
 insert into Student(OIB, PersonID, HoursDriven)
@@ -215,6 +216,7 @@ insert into Instructor(PersonID, VehicleID)
 values 
 (3, 1),
 (7, 4),
+(7, 3),
 (11, 6);
 go
 
