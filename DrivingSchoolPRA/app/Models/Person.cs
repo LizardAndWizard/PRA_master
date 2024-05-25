@@ -13,7 +13,9 @@ public partial class Person
 
     public string Email { get; set; } = null!;
 
-    public string Password { get; set; } = null!;
+    public string PswdHash { get; set; } = null!;
+
+    public string PswSalt { get; set; } = null!;
 
     public virtual ICollection<Instructor> Instructors { get; } = new List<Instructor>();
 

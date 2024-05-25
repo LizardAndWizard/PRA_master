@@ -48,7 +48,7 @@ public partial class PraDrivingSchoolContext : DbContext
 
         modelBuilder.Entity<Brand>(entity =>
         {
-            entity.HasKey(e => e.Idbrand).HasName("PK__Brand__A8EBD9B7FE1D9686");
+            entity.HasKey(e => e.Idbrand).HasName("PK__Brand__A8EBD9B7434A9E6B");
 
             entity.ToTable("Brand");
 
@@ -58,7 +58,7 @@ public partial class PraDrivingSchoolContext : DbContext
 
         modelBuilder.Entity<Category>(entity =>
         {
-            entity.HasKey(e => e.Idcategory).HasName("PK__Category__1AA1EC66E9D9D497");
+            entity.HasKey(e => e.Idcategory).HasName("PK__Category__1AA1EC66144B5E8C");
 
             entity.ToTable("Category");
 
@@ -68,7 +68,7 @@ public partial class PraDrivingSchoolContext : DbContext
 
         modelBuilder.Entity<Colour>(entity =>
         {
-            entity.HasKey(e => e.Idcolour).HasName("PK__Colour__004935CD56DF2255");
+            entity.HasKey(e => e.Idcolour).HasName("PK__Colour__004935CD56342CC7");
 
             entity.ToTable("Colour");
 
@@ -78,7 +78,7 @@ public partial class PraDrivingSchoolContext : DbContext
 
         modelBuilder.Entity<Instructor>(entity =>
         {
-            entity.HasKey(e => e.Idinstructor).HasName("PK__Instruct__928E86C489294072");
+            entity.HasKey(e => e.Idinstructor).HasName("PK__Instruct__928E86C48449EE45");
 
             entity.ToTable("Instructor");
 
@@ -99,7 +99,7 @@ public partial class PraDrivingSchoolContext : DbContext
 
         modelBuilder.Entity<Model>(entity =>
         {
-            entity.HasKey(e => e.Idmodel).HasName("PK__Model__9C90CDACB70ACEA4");
+            entity.HasKey(e => e.Idmodel).HasName("PK__Model__9C90CDACF72C2B3E");
 
             entity.ToTable("Model");
 
@@ -115,7 +115,7 @@ public partial class PraDrivingSchoolContext : DbContext
 
         modelBuilder.Entity<Person>(entity =>
         {
-            entity.HasKey(e => e.Idperson).HasName("PK__Person__78E1C524B36825E0");
+            entity.HasKey(e => e.Idperson).HasName("PK__Person__78E1C524ED7A2EA8");
 
             entity.ToTable("Person");
 
@@ -125,12 +125,13 @@ public partial class PraDrivingSchoolContext : DbContext
             entity.Property(e => e.Lastname)
                 .HasMaxLength(50)
                 .IsUnicode(false);
-            entity.Property(e => e.Password).HasMaxLength(255);
+            entity.Property(e => e.PswSalt).HasMaxLength(255);
+            entity.Property(e => e.PswdHash).HasMaxLength(255);
         });
 
         modelBuilder.Entity<Review>(entity =>
         {
-            entity.HasKey(e => e.Idreview).HasName("PK__Review__E5003B6FECFAEC7B");
+            entity.HasKey(e => e.Idreview).HasName("PK__Review__E5003B6F2AC08B7B");
 
             entity.ToTable("Review");
 
@@ -155,7 +156,7 @@ public partial class PraDrivingSchoolContext : DbContext
 
         modelBuilder.Entity<Rezervation>(entity =>
         {
-            entity.HasKey(e => e.Idrezervation).HasName("PK__Rezervat__1074A5E3B0DAEF51");
+            entity.HasKey(e => e.Idrezervation).HasName("PK__Rezervat__1074A5E3F0DC6E76");
 
             entity.ToTable("Rezervation");
 
@@ -190,7 +191,7 @@ public partial class PraDrivingSchoolContext : DbContext
 
         modelBuilder.Entity<State>(entity =>
         {
-            entity.HasKey(e => e.Idstate).HasName("PK__State__86053034DCA945BA");
+            entity.HasKey(e => e.Idstate).HasName("PK__State__860530349A4C3F5E");
 
             entity.ToTable("State");
 
@@ -200,11 +201,11 @@ public partial class PraDrivingSchoolContext : DbContext
 
         modelBuilder.Entity<Student>(entity =>
         {
-            entity.HasKey(e => e.Oib).HasName("PK__Student__CB394B3F2D36CEAA");
+            entity.HasKey(e => e.Oib).HasName("PK__Student__CB394B3FDA2466DE");
 
             entity.ToTable("Student");
 
-            entity.HasIndex(e => e.PersonId, "UQ__Student__AA2FFB84B6B3DA78").IsUnique();
+            entity.HasIndex(e => e.PersonId, "UQ__Student__AA2FFB841D9AF7CA").IsUnique();
 
             entity.Property(e => e.Oib)
                 .HasMaxLength(11)
@@ -222,7 +223,7 @@ public partial class PraDrivingSchoolContext : DbContext
 
         modelBuilder.Entity<TimeSlot>(entity =>
         {
-            entity.HasKey(e => e.IdtimeSlot).HasName("PK__TimeSlot__3D1FABF10D93E753");
+            entity.HasKey(e => e.IdtimeSlot).HasName("PK__TimeSlot__3D1FABF1AB54A5B5");
 
             entity.ToTable("TimeSlot");
 
@@ -238,7 +239,7 @@ public partial class PraDrivingSchoolContext : DbContext
 
         modelBuilder.Entity<Vehicle>(entity =>
         {
-            entity.HasKey(e => e.Idvehicle).HasName("PK__Vehicle__964C37C023A2A64E");
+            entity.HasKey(e => e.Idvehicle).HasName("PK__Vehicle__964C37C066EDA1B7");
 
             entity.ToTable("Vehicle");
 
