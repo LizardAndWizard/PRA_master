@@ -140,7 +140,8 @@ values
 ('Nissan'),
 ('Tesla'),
 ('Volkswagen'),
-('Chevrolet');
+('Chevrolet'),
+('Renault');
 
 insert into Model([Name], BrandID)
 values 
@@ -154,7 +155,8 @@ values
 ('CB1000R', 6),
 ('Model 2', 9),
 ('Beetle', 10),
-('Malibu', 11);
+('Malibu', 11),
+('Alpine', 12);
 
 insert into State([Name])
 values 
@@ -186,6 +188,7 @@ exec CreateVehicle 1, 4, 8, '...\Honda_CB1000R.jpg'
 exec CreateVehicle 5, 6, 9, '...\Tesla_Model_2.jpg'
 exec CreateVehicle 2, 6, 10, '...\VW_Beetle.jpg'
 exec CreateVehicle 3, 6, 11, '...\Chevy_Malibu.jpg'
+exec CreateVehicle 5, 6, 12, '...\Renault_Alpine.jpg'
 go
 
 insert into Person(FirstName, Lastname, Email, PswdHash, PswSalt)
@@ -201,7 +204,8 @@ values
 ('Petar', 'Cvetković', 'petar.cvijet@gmail.com', 'Ljeto68', 'salt'),
 ('Dušan', 'Kovačević', 'dus.kov@gmail.com', 'Podzemlje', 'salt'),
 ('Srđan', 'Dragojević', 'srdjo@gmail.com', 'LepaSelaLepoGore', 'salt'),
-('Ryan', 'Gosling', 'literally.me@gmail.com', 'OfficerK', 'salt');
+('Ryan', 'Gosling', 'literally.me@gmail.com', 'OfficerK', 'salt'),
+('Misato', 'Katsuragi', 'mis.ato@nerv.com', 'Evangelion', 'salt');
 go
 
 insert into Student(OIB, PersonID, HoursDriven)
@@ -222,7 +226,8 @@ values
 (7, 4),
 (7, 3),
 (11, 6),
-(12,7);
+(12,7),
+(13,8);
 go
 
 insert into Review(StudentID, InstructorID, Grade, Comment)
