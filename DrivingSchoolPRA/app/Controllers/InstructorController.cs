@@ -28,16 +28,20 @@ namespace app.Controllers
             {
                 if (_context.Instructors.Count() <= 0)
                 {
-                    return StatusCode(404, "No avaliable students.");
+                    return StatusCode(404, "No avaliable instructors.");
                 }
 
-                var instructors = _context.Instructors.Include(i => i.Person).Include(i => i.Vehicle).Select(i => new InstructorDto
+                var instructors = _context.Instructors
+                    .Include(i => i.Person)
+                    .Include(i => i.Vehicle)
+                    .Select(i => new InstructorDto
                 {
                     Id = i.PersonId,
                     FirstName = i.Person.FirstName,
                     Lastname = i.Person.Lastname,
                     Email = i.Person.Email,
-                    Vehicle = i.Vehicle
+                    Vehicle = null, //i.Vehicle,
+                    Rating = CalculateRating(i.Idinstructor)
                 });
 
                 return Ok(instructors);
@@ -55,17 +59,22 @@ namespace app.Controllers
             {
                 if (_context.Instructors.FirstOrDefault(s => s.PersonId == id) == null)
                 {
-                    return StatusCode(404, "No avaliable students.");
+                    return StatusCode(404, "No avaliable instructors.");
                 }
 
-                var instructor = _context.Instructors.Include(i => i.Person).Include(i => i.Vehicle).First(i => i.PersonId == id);
+                var instructor = _context.Instructors
+                    .Include(i => i.Person)
+                    .Include(i => i.Vehicle)
+                    .First(i => i.PersonId == id);
+
                 var instructorDto = new InstructorDto
                 {
                     Id = instructor.PersonId,
                     FirstName = instructor.Person.FirstName,
                     Lastname = instructor.Person.Lastname,
                     Email = instructor.Person.Email,
-                    Vehicle = instructor.Vehicle
+                    Vehicle = instructor.Vehicle,
+                    Rating = CalculateRating(instructor.Idinstructor)
                 };
 
                 return Ok(instructorDto);
@@ -74,6 +83,81 @@ namespace app.Controllers
             {
                 return StatusCode(500, e.Message);
             }
+        }
+
+        [HttpGet("[action]")]
+        public ActionResult<IEnumerable<InstructorDto>> GetByName(string filter)
+        {
+            try
+            {
+                if (!_context.Instructors.Any(i => i.Person.FirstName.StartsWith(filter)))
+                {
+                    return StatusCode(404, "No avaliable instructors.");
+                }
+
+                var instructors = _context.Instructors
+                    .Include(i => i.Person)
+                    .Include(i => i.Vehicle)
+                    .Where(i => i.Person.FirstName.StartsWith(filter))
+                    .Select(i => new InstructorDto
+                    {
+                        Id = i.PersonId,
+                        FirstName = i.Person.FirstName,
+                        Lastname = i.Person.Lastname,
+                        Email = i.Person.Email,
+                        Vehicle = i.Vehicle,
+                        Rating = CalculateRating(i.Idinstructor)
+                    });
+
+                return Ok(instructors);
+            }
+            catch (Exception e)
+            {
+                return StatusCode(500, e.Message);
+            }
+        }
+
+        [HttpGet("[action]")]
+        public ActionResult<IEnumerable<InstructorDto>> GetByRating(float min, float max)
+        {
+            try
+            {
+                if (min < 1 || max > 5)
+                {
+                    return BadRequest("Rating must be in range 1 - 5.");
+                }
+
+                var instructors = _context.Instructors
+                    .Include(i => i.Person)
+                    .Include(i => i.Vehicle)
+                    .Select(i => new InstructorDto
+                    {
+                        Id = i.PersonId,
+                        FirstName = i.Person.FirstName,
+                        Lastname = i.Person.Lastname,
+                        Email = i.Person.Email,
+                        Vehicle = i.Vehicle,
+                        Rating = CalculateRating(i.Idinstructor)
+                    })
+                    .Where(i => i.Rating >= min);
+
+                
+
+                return Ok(instructors);
+            }
+            catch (Exception e)
+            {
+                return StatusCode(500, e.Message);
+            }
+        }
+
+        private static float CalculateRating(int id)
+        {
+            //return (float)_context.Instructors
+            //    .First(i => i.Idinstructor == id)
+            //    .Reviews
+            //    .Average(r => r.Grade);
+            return 5;
         }
 
         [HttpPost("[action]")]
@@ -152,5 +236,7 @@ namespace app.Controllers
                 return StatusCode(500, ex.Message);
             }
         }
+
+
     }
 }
