@@ -126,7 +126,7 @@ namespace app.Controllers
         }
 
         [HttpPost("[action]")]
-        public ActionResult Login(StudentLoginDto studentDto)
+        public ActionResult Login(LoginDto studentDto)
         {
             try
             {
