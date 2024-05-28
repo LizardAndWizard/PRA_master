@@ -16,8 +16,6 @@ namespace app.DTOs
 
         public float Rating { get; set; }
 
-        public int VehicleId { get; set; }
-
-        public virtual Vehicle Vehicle { get; set; } = null!;
+        public virtual VehicleDto Vehicle { get; set; } = null!;
     }
 }

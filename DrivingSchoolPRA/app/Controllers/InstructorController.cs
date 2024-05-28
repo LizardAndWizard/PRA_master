@@ -4,6 +4,7 @@ using app.Security;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
+
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
 namespace app.Controllers
@@ -34,15 +35,11 @@ namespace app.Controllers
                 var instructors = _context.Instructors
                     .Include(i => i.Person)
                     .Include(i => i.Vehicle)
-                    .Select(i => new InstructorDto
-                {
-                    Id = i.PersonId,
-                    FirstName = i.Person.FirstName,
-                    Lastname = i.Person.Lastname,
-                    Email = i.Person.Email,
-                    Vehicle = null, //i.Vehicle,
-                    Rating = CalculateRating(i.Idinstructor)
-                });
+                    .Include(i => i.Vehicle.Category)
+                    .Include(i => i.Vehicle.Colour)
+                    .Include(i => i.Vehicle.Model)
+                    .Include(i => i.Vehicle.Model.Brand)
+                    .Select(i => MapInstructorToDto(i, _context));
 
                 return Ok(instructors);
             }
@@ -65,19 +62,13 @@ namespace app.Controllers
                 var instructor = _context.Instructors
                     .Include(i => i.Person)
                     .Include(i => i.Vehicle)
+                    .Include(i => i.Vehicle.Category)
+                    .Include(i => i.Vehicle.Colour)
+                    .Include(i => i.Vehicle.Model)
+                    .Include(i => i.Vehicle.Model.Brand)
                     .First(i => i.PersonId == id);
 
-                var instructorDto = new InstructorDto
-                {
-                    Id = instructor.PersonId,
-                    FirstName = instructor.Person.FirstName,
-                    Lastname = instructor.Person.Lastname,
-                    Email = instructor.Person.Email,
-                    Vehicle = instructor.Vehicle,
-                    Rating = CalculateRating(instructor.Idinstructor)
-                };
-
-                return Ok(instructorDto);
+                return Ok(MapInstructorToDto(instructor, _context));
             }
             catch (Exception e)
             {
@@ -98,16 +89,12 @@ namespace app.Controllers
                 var instructors = _context.Instructors
                     .Include(i => i.Person)
                     .Include(i => i.Vehicle)
+                    .Include(i => i.Vehicle.Category)
+                    .Include(i => i.Vehicle.Colour)
+                    .Include(i => i.Vehicle.Model)
+                    .Include(i => i.Vehicle.Model.Brand)
                     .Where(i => i.Person.FirstName.StartsWith(filter))
-                    .Select(i => new InstructorDto
-                    {
-                        Id = i.PersonId,
-                        FirstName = i.Person.FirstName,
-                        Lastname = i.Person.Lastname,
-                        Email = i.Person.Email,
-                        Vehicle = i.Vehicle,
-                        Rating = CalculateRating(i.Idinstructor)
-                    });
+                    .Select(i => MapInstructorToDto(i, _context));
 
                 return Ok(instructors);
             }
@@ -118,30 +105,31 @@ namespace app.Controllers
         }
 
         [HttpGet("[action]")]
-        public ActionResult<IEnumerable<InstructorDto>> GetByRating(float min, float max)
+        public ActionResult<IEnumerable<InstructorDto>> GetByRating(float min = 1, float max = 5)
         {
             try
             {
-                if (min < 1 || max > 5)
+                if (min < 1 || min > 5 || max < 1 || max > 5)
                 {
                     return BadRequest("Rating must be in range 1 - 5.");
                 }
 
-                var instructors = _context.Instructors
+                List<InstructorDto> instructors = _context.Instructors
                     .Include(i => i.Person)
                     .Include(i => i.Vehicle)
-                    .Select(i => new InstructorDto
-                    {
-                        Id = i.PersonId,
-                        FirstName = i.Person.FirstName,
-                        Lastname = i.Person.Lastname,
-                        Email = i.Person.Email,
-                        Vehicle = i.Vehicle,
-                        Rating = CalculateRating(i.Idinstructor)
-                    })
-                    .Where(i => i.Rating >= min);
+                    .Include(i => i.Vehicle.Category)
+                    .Include(i => i.Vehicle.Colour)
+                    .Include(i => i.Vehicle.Model)
+                    .Include(i => i.Vehicle.Model.Brand)
+                    .Select(i => MapInstructorToDto(i, _context))
+                    .ToList();
 
-                
+                instructors = instructors.Where(i => i.Rating >= min && i.Rating <= max).ToList();
+
+                if (instructors.Count == 0)
+                {
+                    return BadRequest("No such instructors");
+                }
 
                 return Ok(instructors);
             }
@@ -149,15 +137,6 @@ namespace app.Controllers
             {
                 return StatusCode(500, e.Message);
             }
-        }
-
-        private static float CalculateRating(int id)
-        {
-            //return (float)_context.Instructors
-            //    .First(i => i.Idinstructor == id)
-            //    .Reviews
-            //    .Average(r => r.Grade);
-            return 5;
         }
 
         [HttpPost("[action]")]
@@ -237,6 +216,38 @@ namespace app.Controllers
             }
         }
 
+        private static float CalculateRating(int id, PraDrivingSchoolContext context)
+        {
+            var reviews = context.Instructors
+                .Include(i => i.Reviews)
+                .First(i => i.Idinstructor == id)
+                .Reviews;
 
+            int sum = reviews.Sum(r => r.Grade);
+            float count = reviews.Count();
+
+            return sum / count;
+        }
+
+        private static InstructorDto MapInstructorToDto(Instructor instructor, PraDrivingSchoolContext context)
+        {
+            return new InstructorDto
+            {
+                Id = instructor.PersonId,
+                FirstName = instructor.Person.FirstName,
+                Lastname = instructor.Person.Lastname,
+                Email = instructor.Person.Email,
+                Vehicle = new VehicleDto
+                {
+                    Idvehicle = instructor.VehicleId,
+                    Category = instructor.Vehicle.Category.Name,
+                    Colour = instructor.Vehicle.Colour.Name,
+                    Model = instructor.Vehicle.Model.Name,
+                    Brand = instructor.Vehicle.Model.Brand.Name,
+                    Picture = null // TODO: popraviti kad se rjesi slika promjeniti
+                },
+                Rating = CalculateRating(instructor.Idinstructor, context)
+            };
+        }
     }
 }
