@@ -40,7 +40,7 @@ namespace app.Controllers
                     .Include(i => i.Vehicle.Model)
                     .Include(i => i.Vehicle.Model.Brand)
                     .Select(i => MapInstructorToDto(i, _context));
-
+                
                 return Ok(instructors);
             }
             catch (Exception e)
@@ -222,6 +222,11 @@ namespace app.Controllers
                 .Include(i => i.Reviews)
                 .First(i => i.Idinstructor == id)
                 .Reviews;
+
+            if (reviews.Count() == 0)
+            {
+                return 0;
+            }
 
             int sum = reviews.Sum(r => r.Grade);
             float count = reviews.Count();
