@@ -2,6 +2,7 @@
 using app.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.IdentityModel.Tokens;
 
 namespace app.Controllers
 {
@@ -38,6 +39,36 @@ namespace app.Controllers
                 _context.SaveChanges();
 
                 return Ok();
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+            }
+        }
+
+        [HttpGet]
+        public ActionResult<IEnumerable<ReviewDto>> Get()
+        {
+            try
+            {
+                var reviews = _context.Reviews;
+
+                if (reviews.IsNullOrEmpty())
+                {
+                    return StatusCode(404, "No reviews found.");
+                }
+
+                var reviewsDto = reviews.Select(review => new ReviewDto
+                {
+                    Id = review.Idreview,
+                    StudentOIB = review.StudentId,
+                    InstructorId = review.InstructorId,
+                    Grade = review.Grade,
+                    Comment = review.Comment,
+
+                });
+
+                return Ok(reviewsDto);
             }
             catch (Exception ex)
             {
