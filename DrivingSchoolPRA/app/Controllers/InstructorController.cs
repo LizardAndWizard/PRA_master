@@ -249,7 +249,7 @@ namespace app.Controllers
                     Colour = instructor.Vehicle.Colour.Name,
                     Model = instructor.Vehicle.Model.Name,
                     Brand = instructor.Vehicle.Model.Brand.Name,
-                    Picture = null // TODO: popraviti kad se rjesi slika promjeniti
+                    Picture = instructor.Vehicle.Picture
                 },
                 Rating = CalculateRating(instructor.Idinstructor, context)
             };
