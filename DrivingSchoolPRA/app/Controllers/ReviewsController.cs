@@ -1,4 +1,4 @@
-﻿using app.DTOs;
+using app.DTOs;
 using app.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -45,6 +45,7 @@ namespace app.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
             }
         }
+
 
         [HttpGet]
         public ActionResult<IEnumerable<ReviewDto>> Get()

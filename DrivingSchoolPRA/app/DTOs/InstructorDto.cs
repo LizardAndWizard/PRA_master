@@ -14,8 +14,8 @@ namespace app.DTOs
 
         public string Password { get; set; } = null!;
 
-        public int VehicleId { get; set; }
+        public float Rating { get; set; }
 
-        public virtual Vehicle Vehicle { get; set; } = null!;
+        public virtual VehicleDto Vehicle { get; set; } = null!;
     }
 }
