@@ -39,19 +39,9 @@ create table Colour (
 );
 go
 
-create table Vehicle (
-    IDVehicle int primary key identity (1, 1),
-    ColourID int foreign key references Colour(IDColour) not null,
-	CategoryID int foreign key references Category(IDCategory) not null,
-	ModelID int foreign key references Model(IDModel) not null,
-	Picture varbinary(max)
-);
-go
-
 create table Instructor (
     IDInstructor int primary key identity (1, 1),
     PersonID int foreign key references Person(IDPerson) not null,
-	VehicleID int foreign key references Vehicle(IDVehicle) not null
 );
 go
 
@@ -59,6 +49,16 @@ create table Student (
     OIB char(11) primary key,
     PersonID int foreign key references Person(IDPerson) unique not null,
 	HoursDriven int default 0
+);
+go
+
+create table Vehicle (
+    IDVehicle int primary key identity (1, 1),
+    ColourID int foreign key references Colour(IDColour) not null,
+	CategoryID int foreign key references Category(IDCategory) not null,
+	ModelID int foreign key references Model(IDModel) not null,
+	InstructorID int foreign key references Instructor(IDInstructor) not null,
+	Picture varbinary(max)
 );
 go
 
@@ -169,43 +169,35 @@ create or alter proc CreateVehicle
 	@Colour int,
 	@Category int,
 	@Model int,
+	@Instructor int,
 	@PicPath nvarchar(500)
 as
 	declare @tsql nvarchar(max)
-	SET @tsql = 'insert into Vehicle(ColourID, CategoryID, ModelID, Picture) ' +
+	SET @tsql = 'insert into Vehicle(ColourID, CategoryID, ModelID, InstructorID, Picture) ' +
                ' SELECT ' + ''''
 			   + cast(@Colour as varchar(10)) + '''' + ',' + ''''
 			   + cast(@Category as varchar(10)) + '''' + ',' + ''''
-			   + cast(@Model as varchar(10))  + '''' + ', * ' + 
+			   + cast(@Model as varchar(10))  + '''' + ',' + ''''
+			   + cast(@Instructor as varchar(10))  + '''' + ', * ' + 
                'FROM Openrowset( Bulk ' + '''' + @PicPath + '''' + ', Single_Blob) as img'
     EXEC (@tsql)
 go
 
-exec CreateVehicle 1, 6, 3, '...\Citroen_C3.jpg'
-exec CreateVehicle 4, 6, 4, '...\Fiat_500.jpg'
-exec CreateVehicle 6, 6, 6, '...\Honda_Civic.jpg'
-exec CreateVehicle 1, 4, 8, '...\Honda_CB1000R.jpg'
-exec CreateVehicle 5, 6, 9, '...\Tesla_Model_2.jpg'
-exec CreateVehicle 2, 6, 10, '...\VW_Beetle.jpg'
-exec CreateVehicle 3, 6, 11, '...\Chevy_Malibu.jpg'
-exec CreateVehicle 5, 6, 12, '...\Renault_Alpine.jpg'
-go
-
 insert into Person(FirstName, Lastname, Email, PswdHash, PswSalt)
 values 
-('Pero', 'Perić', 'pp@gmail.com', 'P3roM4j5t0r', 'salt'),
-('Iva', 'Ivić', 'iiviich@gmail.com', 'BejbiLazanja', 'salt'),
-('Marin', 'Marić', 'mar.mar@gmail.com', 'Pa$$w0rd', 'salt'),
-('Bogo', 'Moljak', 'bogo.moljka@hotmail.com', 'NAJboljiDoktor', 'salt'),
-('Florijan', 'Gavran', 'gavranov.let@gmail.com', 'KadCeRucakNecuJogurt', 'salt'),
-('Veljko', 'Kunić', 'v.kunich@gmail.com', 'zapravoNajboljiDoktor', 'salt'),
-('Miško', 'Krstić', 'misho.kr@outlook.com', 'TkoToTamoPeva', 'salt'),
-('Laki', 'Topalović', 'laki.luk@gmail.com', 'MaratonciTrcePocasnikrug', 'salt'),
-('Petar', 'Cvetković', 'petar.cvijet@gmail.com', 'Ljeto68', 'salt'),
-('Dušan', 'Kovačević', 'dus.kov@gmail.com', 'Podzemlje', 'salt'),
-('Srđan', 'Dragojević', 'srdjo@gmail.com', 'LepaSelaLepoGore', 'salt'),
-('Ryan', 'Gosling', 'literally.me@gmail.com', 'OfficerK', 'salt'),
-('Misato', 'Katsuragi', 'mis.ato@nerv.com', 'Evangelion', 'salt');
+('Pero', 'Perić', 'pp@gmail.com', '32xeU2ICKqbGEK5EJuU0s0f7cFaJBnsRV5hu6pCutUU=', 'yTu9ryRQ0ydkG1YZAhhNYQ=='),
+('Iva', 'Ivić', 'iiviich@gmail.com', 'EeoJbpi8QzTQSYEmfsr4OlG5PuAURS/LqrFnJTC1wmg=', 'a1naoPX1qqlTuWU8KopZHQ=='),
+('Marin', 'Marić', 'mar.mar@gmail.com', 'U67MZpoOLP0zQ6KFnSLAisruBXhF4RaQYc7CYP8B0eM=', 'gP0gh/H+NdDCjXNB3djp5w=='),
+('Bogo', 'Moljak', 'bogo.moljka@hotmail.com', 'KeYsVeKHcQyk//YF8QCJZ2YxDGktWEYUVKGgfg9pjnU=', 'zGw2IE4cQ7oNKOBW4p9xuQ=='),
+('Florijan', 'Gavran', 'gavranov.let@gmail.com', '3O4nZDb3sXuMxum0PnVhExQIF0Q2iXjsS8FVw805424=', 'EFxTyCTLxeafMQgpjxUJIg=='),
+('Veljko', 'Kunić', 'v.kunich@gmail.com', 'Gxrtl7P5lkE1c5CuFCSHhA0+NryW8g8JQOYyxG8JIlI=', '38XbCZ4P9yT7YWdIjEkl+g=='),
+('Miško', 'Krstić', 'misho.kr@outlook.com', 'LTc3WOipbkL8wfmkJAIpj6xF0k2p+ix9U+6g3kHiHDU=', 'evXico2kvhoieII9TeDASw=='),
+('Laki', 'Topalović', 'laki.luk@gmail.com', 'adJjXolh6ZVeta1DsJqks0UEauaKExHKXjGd+8S9PDs=', 'R2x7tdoAhEYwMjvmAM6OkA=='),
+('Petar', 'Cvetković', 'petar.cvijet@gmail.com', 'jLSaRRXCfgxIE52lKdVRiTcO2y9SHD/TriqvKjaS8sA=', 'elblK1iu04LppxHUU3Dd8A=='),
+('Dušan', 'Kovačević', 'dus.kov@gmail.com', 'RBgPcvt5wGF49tgcPhKdUbjZpSBXr0qynVqrhYtjnZk=+8S9PDs=', 'EEsmnA9CRp0PK11lslhx8w=='),
+('Srđan', 'Dragojević', 'srdjo@gmail.com', '8SHQbgk4OIWtZMkxgJflvl/3iJsK/5m1NxtxE4zt70A=', 'kuvK6Z9wNsm66Vf8q7rImg=='),
+('Ryan', 'Gosling', 'literally.me@gmail.com', 'LsAjamilmwxtTTwjSHhYtD9t2mzjQLZxi6g9u8docx8=', '38uaEl7J7nModeNNQCEeMg=='),
+('Misato', 'Katsuragi', 'mis.ato@nerv.com', '8ATeNb16/77BZqGYsEQQzzPM9BaHx7/uNmUd56Chkp8=', 'SY+h4g9bJzyaHTf1VIsCMA==');
 go
 
 insert into Student(OIB, PersonID, HoursDriven)
@@ -220,14 +212,23 @@ values
 ('28466969468', 10, 13);
 go
 
-insert into Instructor(PersonID, VehicleID)
+insert into Instructor(PersonID)
 values 
-(3, 1),
-(7, 4),
-(7, 3),
-(11, 6),
-(12,7),
-(13,8);
+(3),
+(7),
+(11),
+(12),
+(13);
+go
+
+exec CreateVehicle 1, 6, 3, 1, '\Citroen_C3.jpg'
+exec CreateVehicle 4, 6, 4, 3, '\Fiat_500.jpg'
+exec CreateVehicle 6, 6, 6, 2, '\Honda_Civic.jpg'
+exec CreateVehicle 1, 4, 8, 2, '\Honda_CB1000R.jpg'
+exec CreateVehicle 5, 6, 9, 3, '\Tesla_Model_2.jpg'
+exec CreateVehicle 2, 6, 10, 3, '\VW_Beetle.jpg'
+exec CreateVehicle 3, 6, 11, 4, '\Chevy_Malibu.jpg'
+exec CreateVehicle 5, 6, 12, 5, '\Renault_Alpine.jpg'
 go
 
 insert into Review(StudentID, InstructorID, Grade, Comment)
