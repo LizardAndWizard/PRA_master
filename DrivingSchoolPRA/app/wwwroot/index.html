@@ -1,25 +1,24 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
+<head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Index</title>
-    <link
-      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
-      rel="stylesheet"
-      integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH"
-      crossorigin="anonymous"
-    />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+          rel="stylesheet"
+          integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH"
+          crossorigin="anonymous" />
     <link rel="stylesheet" href="style.css" />
-    <script
-      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
-      integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
-      crossorigin="anonymous"
-    ></script>
-  </head>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+            integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+            crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"
+            integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo="
+            crossorigin="anonymous"></script>
+</head>
   <body>
     <nav>
-      <p>Username</p>
+      <p id="username">Username</p>
       <ul>
         <li><a href="profile.html">Profile</a></li>
         <li><a href="">Appointments</a></li>
@@ -71,80 +70,89 @@
       </div>
     </div>
 
-    <div class="container d-flex flex-column">
-      <div
-        class="d-flex align-items-center"
-        style="gap: 32px; margin-top: 16px"
-      >
-        <input
-          type="text"
-          placeholder="Filter by name..."
-          style="width: 196px"
-        />
-        <div>
-          <!-- Connect with API to filter results based on rating response -->
-          <label for="rating-filter">Filter by rating:</label>
-          <select>
-            <option value="1">1 star</option>
-            <option value="2">2 stars</option>
-            <option value="3">3 stars</option>
-            <option value="4">4 stars</option>
-            <option value="5">5 stars</option>
-          </select>
+    <div class="container d-flex flex-column" id="instructor-container">
+        <div class="d-flex align-items-center"
+             style="gap: 32px; margin-top: 16px">
+            <input type="text"
+                   placeholder="Filter by name..."
+                   style="width: 196px" />
+            <div>
+                <!-- Connect with API to filter results based on rating response -->
+                <label for="rating-filter">Filter by rating:</label>
+                <select>
+                    <option value="1">1 star</option>
+                    <option value="2">2 stars</option>
+                    <option value="3">3 stars</option>
+                    <option value="4">4 stars</option>
+                    <option value="5">5 stars</option>
+                </select>
+            </div>
         </div>
-      </div>
-      <!-- Generate instructor cards based on how many items you get from API -->
-      <div
-        class="instructor-card"
-        data-bs-toggle="modal"
-        data-bs-target="#popup-1"
-      >
-        <div class="info-section">
-          <!-- Connect this with API as well -->
-          <span>John Doe</span>
-          <p>Driving: Tesla Model S</p>
-        </div>
-        <div class="rating-section">
-          <i class="bi bi-star-fill"></i>
-          <i class="bi bi-star-fill"></i>
-          <i class="bi bi-star-fill"></i>
-          <i class="bi bi-star-half"></i>
-          <i class="bi bi-star"></i>
-          (3.5)
-        </div>
-      </div>
-      <div
-        class="instructor-card"
-        data-bs-toggle="modal"
-        data-bs-target="#popup-2"
-      >
-        <div class="info-section">
-          <span>John Doe</span>
-          <p>Driving: Tesla Model S</p>
-        </div>
-        <div class="rating-section">
-          <i class="bi bi-star-fill"></i>
-          <i class="bi bi-star-fill"></i>
-          <i class="bi bi-star-fill"></i>
-          <i class="bi bi-star-half"></i>
-          <i class="bi bi-star"></i>
-          (3.5)
-        </div>
-      </div>
-      <div class="instructor-card">
-        <div class="info-section">
-          <span>John Doe</span>
-          <p>Driving: Tesla Model S</p>
-        </div>
-        <div class="rating-section">
-          <i class="bi bi-star-fill"></i>
-          <i class="bi bi-star-fill"></i>
-          <i class="bi bi-star-fill"></i>
-          <i class="bi bi-star-half"></i>
-          <i class="bi bi-star"></i>
-          (3.5)
-        </div>
-      </div>
+        <!-- Instructor cards will be placed here via API -->
     </div>
-  </body>
+</body>
+<script type="text/javascript">
+    const loginToken = localStorage.getItem("token")
+    const userName = localStorage.getItem("user")
+    const fetchInstructorListUrl = "http://localhost:5290/api/Instructor"
+    const instructorContainerElement = document.getElementById("instructor-container")
+
+    displayUserInNavbar()
+    fetchInstructorList()
+
+    function displayUserInNavbar() {
+        const usernameElement = document.getElementById("username")
+        if (userName) usernameElement.innerHTML = userName
+    }
+
+    function fetchInstructorList() {
+        $.ajax({
+            method: "GET",
+            url: fetchInstructorListUrl,
+            contentType: 'application/json',
+            headers: {
+                Authorization: "Bearer " + loginToken
+            }
+        }).done(function (data) {
+            displayInstructorList(data)
+        }).fail(function (err) {
+            alert(err.responseText);
+        });
+    }
+
+    function displayInstructorList(list) {
+        for (const k in list) {
+            generateInstructorCard(list[k])
+        }
+    }
+
+    function generateInstructorCard(item) {
+        const instructorNameElement = document.createElement("span")
+        instructorNameElement.innerHTML = `${item.firstName} ${item.lastname}`
+        const instructorCarElement = document.createElement("p")
+        instructorCarElement.innerHTML = `Driving: ${item.vehicle.brand} ${item.vehicle.model}`
+        const infoSectionElement = document.createElement("div")
+        infoSectionElement.appendChild(instructorNameElement)
+        infoSectionElement.appendChild(instructorCarElement)
+        infoSectionElement.className = "info-section"
+        const ratingSectionElement = document.createElement("div")
+        ratingSectionElement.className = "rating-section"
+        const fullStarIcon = document.createElement("i")
+        const halfStarIcon = document.createElement("i")
+        fullStarIcon.classList.add("bi")
+        fullStarIcon.classList.add("bi-star-fill")
+        halfStarIcon.classList.add("bi")
+        halfStarIcon.classList.add("bi-star-half")
+        ratingSectionElement.appendChild(fullStarIcon)
+        ratingSectionElement.appendChild(halfStarIcon)
+        ratingSectionElement.innerHTML += `(${item.rating})`
+        const instructorCardElement = document.createElement("div")
+        instructorCardElement.className = "instructor-card"
+        instructorCardElement.setAttribute("data-bs-toggle", "modal")
+        instructorCardElement.setAttribute("data-bs-target", "#popup-1")
+        instructorCardElement.appendChild(infoSectionElement)
+        instructorCardElement.appendChild(ratingSectionElement)
+        instructorContainerElement.appendChild(instructorCardElement)
+    }
+</script>
 </html>

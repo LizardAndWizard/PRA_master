@@ -55,6 +55,7 @@
         }).done(function (tokenData) {
             console.log(tokenData);
             localStorage.setItem("token", tokenData);
+            localStorage.setItem("user", loginData.email)
 
             window.location.href = "index.html";
         }).fail(function (err) {
