@@ -35,11 +35,6 @@ namespace app.Controllers
 
                 var instructors = _context.Instructors
                     .Include(i => i.Person)
-                    .Include(i => i.Vehicle)
-                    .Include(i => i.Vehicle.Category)
-                    .Include(i => i.Vehicle.Colour)
-                    .Include(i => i.Vehicle.Model)
-                    .Include(i => i.Vehicle.Model.Brand)
                     .Select(i => MapInstructorToDto(i, _context));
                 
                 return Ok(instructors);
@@ -62,11 +57,6 @@ namespace app.Controllers
 
                 var instructor = _context.Instructors
                     .Include(i => i.Person)
-                    .Include(i => i.Vehicle)
-                    .Include(i => i.Vehicle.Category)
-                    .Include(i => i.Vehicle.Colour)
-                    .Include(i => i.Vehicle.Model)
-                    .Include(i => i.Vehicle.Model.Brand)
                     .First(i => i.PersonId == id);
 
                 return Ok(MapInstructorToDto(instructor, _context));
@@ -94,11 +84,6 @@ namespace app.Controllers
 
                 IList<InstructorDto> instructors = _context.Instructors
                     .Include(i => i.Person)
-                    .Include(i => i.Vehicle)
-                    .Include(i => i.Vehicle.Category)
-                    .Include(i => i.Vehicle.Colour)
-                    .Include(i => i.Vehicle.Model)
-                    .Include(i => i.Vehicle.Model.Brand)
                     .Where(i => i.Person.FirstName.Contains(filter) || i.Person.Lastname.Contains(filter))
                     .Select(i => MapInstructorToDto(i, _context))
                     .ToList();
@@ -142,8 +127,7 @@ namespace app.Controllers
                 int id = _context.People.First(p => p.Email.Equals(email)).Idperson;
                 var instructor = new Instructor
                 {
-                    PersonId = id,
-                    VehicleId = instructorDto.VehicleId
+                    PersonId = id
                 };
                 _context.Instructors.Add(instructor);
                 _context.SaveChanges();
@@ -211,23 +195,40 @@ namespace app.Controllers
 
         private static InstructorDto MapInstructorToDto(Instructor instructor, PraDrivingSchoolContext context)
         {
-            return new InstructorDto
+            Vehicle vehicle = context.Vehicles
+                .Include(v => v.Model)
+                .Include(v => v.Model.Brand)
+                .Include(v => v.Category)
+                .Include(v => v.Colour)
+                .FirstOrDefault(v => v.InstructorId == instructor.Idinstructor);
+
+            var instructorDto = new InstructorDto
             {
                 Id = instructor.PersonId,
                 FirstName = instructor.Person.FirstName,
                 Lastname = instructor.Person.Lastname,
                 Email = instructor.Person.Email,
-                Vehicle = new VehicleDto
-                {
-                    Idvehicle = instructor.VehicleId,
-                    Category = instructor.Vehicle.Category.Name,
-                    Colour = instructor.Vehicle.Colour.Name,
-                    Model = instructor.Vehicle.Model.Name,
-                    Brand = instructor.Vehicle.Model.Brand.Name,
-                    Picture = instructor.Vehicle.Picture
-                },
                 Rating = CalculateRating(instructor.Idinstructor, context)
             };
+
+            if (vehicle != null)
+            {
+                instructorDto.Vehicle = new VehicleDto
+                {
+                    Idvehicle = vehicle.Idvehicle,
+                    Model = vehicle.Model.Name,
+                    Brand = vehicle.Model.Brand.Name,
+                    Category = vehicle.Category.Name,
+                    Colour = vehicle.Colour.Name,
+                    Picture = null//vehicle.Picture
+                };
+            }
+            else
+            {
+                instructorDto.Vehicle = null;
+            }
+
+            return instructorDto;
         }
     }
 }
