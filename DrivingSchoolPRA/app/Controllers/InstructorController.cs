@@ -2,6 +2,7 @@
 using app.Models;
 using app.Security;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ModelBinding.Binders;
 using Microsoft.EntityFrameworkCore;
 
 
@@ -77,59 +78,32 @@ namespace app.Controllers
         }
 
         [HttpGet("[action]")]
-        public ActionResult<IEnumerable<InstructorDto>> GetByName(string filter)
+        public ActionResult<IEnumerable<InstructorDto>> Search(string filter = "", float minRating = 1, float maxRating = 5)
         {
             try
             {
-                if (!_context.Instructors.Any(i => i.Person.FirstName.StartsWith(filter)))
-                {
-                    return StatusCode(404, "No avaliable instructors.");
-                }
-
-                var instructors = _context.Instructors
-                    .Include(i => i.Person)
-                    .Include(i => i.Vehicle)
-                    .Include(i => i.Vehicle.Category)
-                    .Include(i => i.Vehicle.Colour)
-                    .Include(i => i.Vehicle.Model)
-                    .Include(i => i.Vehicle.Model.Brand)
-                    .Where(i => i.Person.FirstName.StartsWith(filter))
-                    .Select(i => MapInstructorToDto(i, _context));
-
-                return Ok(instructors);
-            }
-            catch (Exception e)
-            {
-                return StatusCode(500, e.Message);
-            }
-        }
-
-        [HttpGet("[action]")]
-        public ActionResult<IEnumerable<InstructorDto>> GetByRating(float min = 1, float max = 5)
-        {
-            try
-            {
-                if (min < 1 || min > 5 || max < 1 || max > 5)
+                if (minRating < 1 || minRating > 5 || maxRating < 1 || maxRating > 5)
                 {
                     return BadRequest("Rating must be in range 1 - 5.");
                 }
 
-                List<InstructorDto> instructors = _context.Instructors
+                if (!_context.Instructors.Any(i => i.Person.FirstName.Contains(filter) || i.Person.Lastname.Contains(filter)))
+                {
+                    return StatusCode(404, "No avaliable instructors.");
+                }
+
+                IList<InstructorDto> instructors = _context.Instructors
                     .Include(i => i.Person)
                     .Include(i => i.Vehicle)
                     .Include(i => i.Vehicle.Category)
                     .Include(i => i.Vehicle.Colour)
                     .Include(i => i.Vehicle.Model)
                     .Include(i => i.Vehicle.Model.Brand)
+                    .Where(i => i.Person.FirstName.Contains(filter) || i.Person.Lastname.Contains(filter))
                     .Select(i => MapInstructorToDto(i, _context))
                     .ToList();
 
-                instructors = instructors.Where(i => i.Rating >= min && i.Rating <= max).ToList();
-
-                if (instructors.Count == 0)
-                {
-                    return BadRequest("No such instructors");
-                }
+                instructors = instructors.Where(i => i.Rating >= minRating && i.Rating <= maxRating).ToList();
 
                 return Ok(instructors);
             }
@@ -138,6 +112,7 @@ namespace app.Controllers
                 return StatusCode(500, e.Message);
             }
         }
+
 
         [HttpPost("[action]")]
         public ActionResult<InstructorDto> Register(InstructorRegisterDto instructorDto)
