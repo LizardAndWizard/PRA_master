@@ -195,12 +195,13 @@ namespace app.Controllers
 
         private static InstructorDto MapInstructorToDto(Instructor instructor, PraDrivingSchoolContext context)
         {
-            Vehicle vehicle = context.Vehicles
+            var vehicles = context.Vehicles
                 .Include(v => v.Model)
                 .Include(v => v.Model.Brand)
                 .Include(v => v.Category)
                 .Include(v => v.Colour)
-                .FirstOrDefault(v => v.InstructorId == instructor.Idinstructor);
+                .Where(v => v.InstructorId == instructor.Idinstructor)
+                .ToList();
 
             var instructorDto = new InstructorDto
             {
@@ -211,21 +212,21 @@ namespace app.Controllers
                 Rating = CalculateRating(instructor.Idinstructor, context)
             };
 
-            if (vehicle != null)
+            if (vehicles != null)
             {
-                instructorDto.Vehicle = new VehicleDto
+                instructorDto.Vehicles = vehicles.Select(vehicle => new VehicleDto
                 {
                     Idvehicle = vehicle.Idvehicle,
                     Model = vehicle.Model.Name,
                     Brand = vehicle.Model.Brand.Name,
                     Category = vehicle.Category.Name,
                     Colour = vehicle.Colour.Name,
-                    Picture = null//vehicle.Picture
-                };
+                    Picture = null //vehicle.Picture
+                }).ToList();
             }
             else
             {
-                instructorDto.Vehicle = null;
+                instructorDto.Vehicles = new List<VehicleDto>();
             }
 
             return instructorDto;
