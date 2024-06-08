@@ -13,13 +13,15 @@ public partial class Vehicle
 
     public int ModelId { get; set; }
 
+    public int InstructorId { get; set; }
+
     public byte[]? Picture { get; set; }
 
     public virtual Category Category { get; set; } = null!;
 
     public virtual Colour Colour { get; set; } = null!;
 
-    public virtual ICollection<Instructor> Instructors { get; } = new List<Instructor>();
+    public virtual Instructor Instructor { get; set; } = null!;
 
     public virtual Model Model { get; set; } = null!;
 }

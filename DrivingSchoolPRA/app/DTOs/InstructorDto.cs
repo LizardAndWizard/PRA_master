@@ -16,6 +16,6 @@ namespace app.DTOs
 
         public float Rating { get; set; }
 
-        public virtual VehicleDto Vehicle { get; set; } = null!;
+        public virtual IList<VehicleDto> Vehicles { get; set; } = null!;
     }
 }
