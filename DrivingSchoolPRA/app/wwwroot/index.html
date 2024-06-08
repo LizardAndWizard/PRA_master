@@ -74,12 +74,15 @@
         <div class="d-flex align-items-center"
              style="gap: 32px; margin-top: 16px">
             <input type="text"
+                   id="name-filter-input"
                    placeholder="Filter by name..."
-                   style="width: 196px" />
+                   style="width: 196px"
+                   oninput="filterByName()"/>
             <div>
-                <!-- Connect with API to filter results based on rating response -->
-                <label for="rating-filter">Filter by rating:</label>
-                <select>
+                <label for="rating-filter-input">Filter by rating:</label>
+                <select id="rating-filter-input" onchange="filterByRating()">
+                    <option value="show all">show all</option>
+                    <option value="0">0 stars</option>
                     <option value="1">1 star</option>
                     <option value="2">2 stars</option>
                     <option value="3">3 stars</option>
@@ -88,6 +91,7 @@
                 </select>
             </div>
         </div>
+        <div id="instructor-card-container" class="container d-flex flex-column"></div>
         <!-- Instructor cards will be placed here via API -->
     </div>
 </body>
@@ -95,7 +99,12 @@
     const loginToken = localStorage.getItem("token")
     const userName = localStorage.getItem("user")
     const fetchInstructorListUrl = "http://localhost:5290/api/Instructor"
-    const instructorContainerElement = document.getElementById("instructor-container")
+    const instructorCardContainerElement = document.getElementById("instructor-card-container")
+
+    let instructorList = []
+
+    const ratingFilterElement = document.getElementById('rating-filter-input')
+    const nameFilterElement = document.getElementById('name-filter-input')
 
     displayUserInNavbar()
     fetchInstructorList()
@@ -103,6 +112,24 @@
     function displayUserInNavbar() {
         const usernameElement = document.getElementById("username")
         if (userName) usernameElement.innerHTML = userName
+    }
+
+    function filterByName() {
+        ratingFilterElement.value = 'show all'
+        filterByRating()
+        const input = nameFilterElement.value;
+        const newInstructorList = instructorList.filter(e => e.firstName.toLowerCase().startsWith(input));
+        displayInstructorList(newInstructorList)
+    }
+
+    function filterByRating() {
+        const rating = ratingFilterElement.value
+        if (rating == 'show all') {
+            displayInstructorList(instructorList)
+            return
+        }
+        const newInstructorList = instructorList.filter(e => e.rating == rating);
+        displayInstructorList(newInstructorList)
     }
 
     function fetchInstructorList() {
@@ -115,12 +142,14 @@
             }
         }).done(function (data) {
             displayInstructorList(data)
+            instructorList = data
         }).fail(function (err) {
             alert(err.responseText);
         });
     }
 
     function displayInstructorList(list) {
+        instructorCardContainerElement.replaceChildren()
         for (const k in list) {
             generateInstructorCard(list[k])
         }
@@ -137,22 +166,32 @@
         infoSectionElement.className = "info-section"
         const ratingSectionElement = document.createElement("div")
         ratingSectionElement.className = "rating-section"
-        const fullStarIcon = document.createElement("i")
-        const halfStarIcon = document.createElement("i")
-        fullStarIcon.classList.add("bi")
-        fullStarIcon.classList.add("bi-star-fill")
-        halfStarIcon.classList.add("bi")
-        halfStarIcon.classList.add("bi-star-half")
-        ratingSectionElement.appendChild(fullStarIcon)
-        ratingSectionElement.appendChild(halfStarIcon)
-        ratingSectionElement.innerHTML += `(${item.rating})`
+        generateRating(ratingSectionElement, item.rating)
+
         const instructorCardElement = document.createElement("div")
         instructorCardElement.className = "instructor-card"
         instructorCardElement.setAttribute("data-bs-toggle", "modal")
         instructorCardElement.setAttribute("data-bs-target", "#popup-1")
         instructorCardElement.appendChild(infoSectionElement)
         instructorCardElement.appendChild(ratingSectionElement)
-        instructorContainerElement.appendChild(instructorCardElement)
+        instructorCardContainerElement.appendChild(instructorCardElement)
+    }
+
+    function generateRating(ratingContainer, numStars) {
+        for (let i = 1; i <= 5; i++) {
+            const fullStarIcon = document.createElement("i")
+            const emptyStarIcon = document.createElement("i")
+            fullStarIcon.classList.add("bi")
+            fullStarIcon.classList.add("bi-star-fill")
+            emptyStarIcon.classList.add("bi")
+            emptyStarIcon.classList.add("bi-star")
+            if (i <= numStars) {
+                ratingContainer.appendChild(fullStarIcon)
+            } else {
+                ratingContainer.appendChild(emptyStarIcon)
+            }
+        }
+        ratingContainer.innerHTML += `(${numStars})`
     }
 </script>
 </html>
