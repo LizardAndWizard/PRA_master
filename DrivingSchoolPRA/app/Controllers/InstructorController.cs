@@ -99,6 +99,36 @@ namespace app.Controllers
             }
         }
 
+        [HttpGet("{id}/reviews")]
+        public ActionResult<IEnumerable<ReviewDto>> GetReviews([FromRoute] int id)
+        {
+            try
+            {
+                var reviews = _context.Reviews.Where(r => r.InstructorId == id);
+
+                if (reviews.IsNullOrEmpty())
+                {
+                    return StatusCode(404, "No reviews found.");
+                }
+
+                var reviewsDto = reviews.Select(review => new ReviewDto
+                {
+                    Id = review.Idreview,
+                    StudentOIB = review.StudentId,
+                    InstructorId = review.InstructorId,
+                    Grade = review.Grade,
+                    Comment = review.Comment,
+
+                });
+
+                return Ok(reviewsDto);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+            }
+        }
+
         [HttpGet("[action]")]
         public ActionResult<IEnumerable<InstructorDto>> Search(string filter = "", float minRating = 1, float maxRating = 5)
         {
