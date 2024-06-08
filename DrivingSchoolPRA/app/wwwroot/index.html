@@ -27,27 +27,14 @@
 
     <!-- Modal 1 -->
     <div class="modal fade" id="popup-1" aria-hidden="true">
-      <div class="modal-dialog">
-        <div class="modal-content box">
-          <div class="modal-content__header">
-            <div class="info">
-              <!-- Connect this info with data from API responses -->
-              <span>John Doe</span>
-              <p>Honda Civic</p>
-              <p>johndoe@example.com</p>
-            </div>
-            <div class="picture">100x100</div>
-          </div>
-          <textarea placeholder="Your message"></textarea>
-          <br />
-          <button>Request</button>
-        </div>
+      <div class="modal-dialog" id="dialog-1">
+        <!--Will be generated via API-->
       </div>
     </div>
 
     <!-- Modal 2 -->
     <div class="modal fade" id="popup-2" aria-hidden="true">
-      <div class="modal-dialog">
+      <div class="modal-dialog" id="dialog-2">
         <div class="modal-content box">
           <div class="modal-content__header">
             <!-- Make it as a form where you can submit the rating you choose via API -->
@@ -105,6 +92,8 @@
 
     const ratingFilterElement = document.getElementById('rating-filter-input')
     const nameFilterElement = document.getElementById('name-filter-input')
+    const dialog1 = document.getElementById("dialog-1")
+    const dialog2 = document.getElementById("dialog-2")
 
     displayUserInNavbar()
     fetchInstructorList()
@@ -148,6 +137,22 @@
         });
     }
 
+    function fetchInstructor(id) {
+        $.ajax({
+            method: "GET",
+            url: "http://localhost:5290/api/Instructor/" + id,
+            contentType: 'application/json',
+            headers: {
+                Authorization: "Bearer " + loginToken
+            }
+        }).done(function (data) {
+            console.log(data)
+            displayInstructorDialog(data)
+        }).fail(function (err) {
+            alert(err.responseText);
+        });
+    }
+
     function displayInstructorList(list) {
         instructorCardContainerElement.replaceChildren()
         for (const k in list) {
@@ -155,11 +160,57 @@
         }
     }
 
+    function displayInstructorDialog(item) {
+        dialog1.replaceChildren()
+        const contentBox = document.createElement('div')
+        contentBox.classList.add('box')
+        contentBox.classList.add('modal-content')
+        const contentHeader = document.createElement('div')
+        contentHeader.className = 'modal-content__header'
+
+        const infoSectionElement = document.createElement('div')
+        infoSectionElement.className = 'info'
+
+        const nameElement = document.createElement('span')
+        const vehicleListElement = document.createElement('p')
+        const emailElement = document.createElement('p')
+
+        nameElement.innerHTML = item.firstName + ' ' + item.lastname
+        vehicleListElement.innerHTML = 'Honda Civic'
+        emailElement.innerHTML = item.email
+
+        infoSectionElement.appendChild(nameElement)
+        infoSectionElement.appendChild(vehicleListElement)
+        infoSectionElement.appendChild(emailElement)
+
+        // TODO: Sloziti da se prikazuje lista vozila (nekako)
+        const pictureSectionElement = document.createElement('div')
+        pictureSectionElement.className = 'picture'
+
+        contentHeader.appendChild(infoSectionElement)
+        contentHeader.appendChild(pictureSectionElement)
+
+        const textareaElement = document.createElement('textarea')
+        textareaElement.placeholder = "Your message"
+
+        const brElement = document.createElement('br')
+        const requestBtnElement = document.createElement('button')
+        requestBtnElement.innerHTML = 'Request'
+
+        contentBox.appendChild(contentHeader)
+        contentBox.appendChild(textareaElement)
+        contentBox.appendChild(brElement)
+        contentBox.appendChild(requestBtnElement)
+        dialog1.appendChild(contentBox)
+    }
+
     function generateInstructorCard(item) {
         const instructorNameElement = document.createElement("span")
         instructorNameElement.innerHTML = `${item.firstName} ${item.lastname}`
         const instructorCarElement = document.createElement("p")
-        instructorCarElement.innerHTML = `Driving: ${item.vehicle.brand} ${item.vehicle.model}`
+        if (item.vehicles.length > 0) {
+            instructorCarElement.innerHTML = `Driving: ${item.vehicles[0].brand} ${item.vehicles[0].model}`
+        }
         const infoSectionElement = document.createElement("div")
         infoSectionElement.appendChild(instructorNameElement)
         infoSectionElement.appendChild(instructorCarElement)
@@ -172,6 +223,7 @@
         instructorCardElement.className = "instructor-card"
         instructorCardElement.setAttribute("data-bs-toggle", "modal")
         instructorCardElement.setAttribute("data-bs-target", "#popup-1")
+        instructorCardElement.addEventListener('click', () => fetchInstructor(item.id))
         instructorCardElement.appendChild(infoSectionElement)
         instructorCardElement.appendChild(ratingSectionElement)
         instructorCardContainerElement.appendChild(instructorCardElement)
