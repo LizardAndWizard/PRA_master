@@ -4,6 +4,7 @@ using app.Security;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding.Binders;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
@@ -64,6 +65,37 @@ namespace app.Controllers
             catch (Exception e)
             {
                 return StatusCode(500, e.Message);
+            }
+        }
+
+
+        [HttpGet("{id}/reservations")]
+        public ActionResult<IEnumerable<ReservationDto>> GetReservations([FromRoute] int id)
+        {
+            try
+            {
+                var reservations = _context.Rezervations.Where(r => r.InstructorId == id);
+
+                if (reservations.IsNullOrEmpty())
+                {
+                    return StatusCode(404, "No reservations found.");
+                }
+
+                var reservationsDto = reservations.Select(reservation => new ReservationDto
+                {
+                    Id = reservation.Idrezervation,
+                    StudentId = reservation.StudentId,
+                    InstructorId = reservation.InstructorId,
+                    StateId = reservation.StateId,
+                    StartDate = reservation.StartDate,
+                    EndDate = reservation.EndDate,
+                });
+
+                return Ok(reservationsDto);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
             }
         }
 
