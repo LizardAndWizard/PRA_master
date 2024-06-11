@@ -65,7 +65,6 @@
         const emailInput = document.getElementById("email");
         const passwordInput = document.getElementById("password");
         async function login(type) {
-            console.log(type)
             if (type == 'student') {
                 loginUrl = "http://localhost:5290/api/Student/Login";
             } else {
@@ -87,12 +86,16 @@
                     localStorage.setItem("token", data.token);
                     localStorage.setItem("user", loginData.email);
                     localStorage.setItem("user_id", data.idPerson);
+                    localStorage.setItem("user_type", type);
 
                     window.location.href = "index.html";
                 })
                 .fail(function (err) {
                     alert(err.responseText);
                     localStorage.removeItem("token");
+                    localStorage.removeItem("user");
+                    localStorage.removeItem("user_id");
+                    localStorage.removeItem("user_type");
                 });
         }
     </script>

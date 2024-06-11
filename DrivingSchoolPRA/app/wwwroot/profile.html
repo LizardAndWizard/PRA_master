@@ -17,13 +17,7 @@
             crossorigin="anonymous"></script>
 </head>
   <body>
-    <nav>
-      <p id="username"></p>
-      <ul>
-        <li><a href="profile.html">Profile</a></li>
-        <li><a href="appointments_polaznik.html">Appointments</a></li>
-      </ul>
-    </nav>
+    <nav id="navbar"></nav>
 
     <div
       class="container d-flex justify-content-center align-items-center"
@@ -43,7 +37,30 @@
     const userEmailElement = document.getElementById('user-email')
     const hoursElement = document.getElementById('hours')
 
-    displayUserInNavbar()
+    displayNavbar()
+
+    function displayNavbar() {
+        const navbar = document.getElementById("navbar")
+        const userNameElement = document.createElement("p")
+        userNameElement.innerHTML = userName
+        linkListElement = document.createElement("ul")
+
+        const listElement1 = document.createElement("li")
+        const link1 = document.createElement("a")
+        link1.href = "index.html"
+        link1.innerHTML = "Home"
+        listElement1.appendChild(link1)
+        const listElement2 = document.createElement("li")
+        const link2 = document.createElement("a")
+        link2.href = "appointments_polaznik.html"
+        link2.innerHTML = "Appointments"
+        listElement2.appendChild(link2)
+        linkListElement.appendChild(listElement1)
+        linkListElement.appendChild(listElement2)
+
+        navbar.appendChild(userNameElement)
+        navbar.appendChild(linkListElement)
+    }
 
     $.ajax({
         method: "GET",
