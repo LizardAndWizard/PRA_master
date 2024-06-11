@@ -1,4 +1,4 @@
-@import url("https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css");
+﻿@import url("https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css");
 
 * {
     box-sizing: border-box;
@@ -93,7 +93,6 @@ nav {
 .box {
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
     background-color: white;
     height: 338px;
     width: 356px;
