@@ -6,9 +6,6 @@ using Microsoft.AspNetCore.Mvc.ModelBinding.Binders;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 
-
-// For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-
 namespace app.Controllers
 {
     [Route("api/[controller]")]
@@ -67,7 +64,6 @@ namespace app.Controllers
                 return StatusCode(500, e.Message);
             }
         }
-
 
         [HttpGet("{id}/reservations")]
         public ActionResult<IEnumerable<ReservationDto>> GetReservations([FromRoute] int id)
@@ -128,7 +124,7 @@ namespace app.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
             }
         }
-
+  
         [HttpGet("[action]")]
         public ActionResult<IEnumerable<InstructorDto>> Search(string filter = "", float minRating = 1, float maxRating = 5)
         {
@@ -159,7 +155,6 @@ namespace app.Controllers
                 return StatusCode(500, e.Message);
             }
         }
-
 
         [HttpPost("[action]")]
         public ActionResult<InstructorDto> Register(InstructorRegisterDto instructorDto)
@@ -205,7 +200,7 @@ namespace app.Controllers
         }
 
         [HttpPost("[action]")]
-        public ActionResult Login(LoginDto instructorDto)
+        public ActionResult<LoginReturnDto> Login(LoginDto instructorDto)
         {
             try
             {
@@ -229,7 +224,9 @@ namespace app.Controllers
                 var secureKey = _configuration["JWT:SecureKey"];
                 var serializedToken = JwtTokenProvider.CreateToken(secureKey, 120, instructorDto.Email, "Instructor");
 
-                return Ok(serializedToken);
+                var returnDto = new LoginReturnDto { IdPerson = existingInstructor.PersonId, Token = serializedToken };
+
+                return Ok(returnDto);
             }
             catch (Exception ex)
             {
