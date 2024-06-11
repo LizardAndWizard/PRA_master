@@ -2,7 +2,9 @@
 using app.Models;
 using app.Security;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ModelBinding.Binders;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 
 namespace app.Controllers
 {
@@ -63,6 +65,66 @@ namespace app.Controllers
             }
         }
 
+        [HttpGet("{id}/reservations")]
+        public ActionResult<IEnumerable<ReservationDto>> GetReservations([FromRoute] int id)
+        {
+            try
+            {
+                var reservations = _context.Rezervations.Where(r => r.InstructorId == id);
+
+                if (reservations.IsNullOrEmpty())
+                {
+                    return StatusCode(404, "No reservations found.");
+                }
+
+                var reservationsDto = reservations.Select(reservation => new ReservationDto
+                {
+                    Id = reservation.Idrezervation,
+                    StudentId = reservation.StudentId,
+                    InstructorId = reservation.InstructorId,
+                    StateId = reservation.StateId,
+                    StartDate = reservation.StartDate,
+                    EndDate = reservation.EndDate,
+                });
+
+                return Ok(reservationsDto);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+            }
+        }
+
+        [HttpGet("{id}/reviews")]
+        public ActionResult<IEnumerable<ReviewDto>> GetReviews([FromRoute] int id)
+        {
+            try
+            {
+                var reviews = _context.Reviews.Where(r => r.InstructorId == id);
+
+                if (reviews.IsNullOrEmpty())
+                {
+                    return StatusCode(404, "No reviews found.");
+                }
+
+                var reviewsDto = reviews.Select(review => new ReviewDto
+                {
+                    Id = review.Idreview,
+                    StudentOIB = review.StudentId,
+                    InstructorId = review.InstructorId,
+                    Grade = review.Grade,
+                    Comment = review.Comment,
+
+                });
+
+                return Ok(reviewsDto);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+            }
+        }
+  
         [HttpGet("[action]")]
         public ActionResult<IEnumerable<InstructorDto>> Search(string filter = "", float minRating = 1, float maxRating = 5)
         {
@@ -93,7 +155,6 @@ namespace app.Controllers
                 return StatusCode(500, e.Message);
             }
         }
-
 
         [HttpPost("[action]")]
         public ActionResult<InstructorDto> Register(InstructorRegisterDto instructorDto)
