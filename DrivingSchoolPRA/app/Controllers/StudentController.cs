@@ -126,7 +126,7 @@ namespace app.Controllers
         }
 
         [HttpPost("[action]")]
-        public ActionResult Login(LoginDto studentDto)
+        public ActionResult<LoginReturnDto> Login(LoginDto studentDto)
         {
             try
             {
@@ -147,7 +147,9 @@ namespace app.Controllers
                 var secureKey = _configuration["JWT:SecureKey"];
                 var serializedToken = JwtTokenProvider.CreateToken(secureKey, 120, studentDto.Email, "Student");
 
-                return Ok(serializedToken);
+                var returnDto = new LoginReturnDto { IdPerson = existingStudent.PersonId, Token = serializedToken };
+
+                return Ok(returnDto);
             }
             catch (Exception ex)
             {
