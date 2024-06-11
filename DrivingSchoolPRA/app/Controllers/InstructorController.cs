@@ -2,11 +2,7 @@
 using app.Models;
 using app.Security;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.ModelBinding.Binders;
 using Microsoft.EntityFrameworkCore;
-
-
-// For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
 namespace app.Controllers
 {
@@ -143,7 +139,7 @@ namespace app.Controllers
         }
 
         [HttpPost("[action]")]
-        public ActionResult Login(LoginDto instructorDto)
+        public ActionResult<LoginReturnDto> Login(LoginDto instructorDto)
         {
             try
             {
@@ -167,7 +163,9 @@ namespace app.Controllers
                 var secureKey = _configuration["JWT:SecureKey"];
                 var serializedToken = JwtTokenProvider.CreateToken(secureKey, 120, instructorDto.Email, "Instructor");
 
-                return Ok(serializedToken);
+                var returnDto = new LoginReturnDto { IdPerson = existingInstructor.PersonId, Token = serializedToken };
+
+                return Ok(returnDto);
             }
             catch (Exception ex)
             {
