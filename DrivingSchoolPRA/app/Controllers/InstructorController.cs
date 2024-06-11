@@ -48,14 +48,14 @@ namespace app.Controllers
         {
             try
             {
-                if (_context.Instructors.FirstOrDefault(s => s.PersonId == id) == null)
+                if (_context.Instructors.FirstOrDefault(s => s.Idinstructor == id) == null)
                 {
                     return StatusCode(404, "No avaliable instructors.");
                 }
 
                 var instructor = _context.Instructors
                     .Include(i => i.Person)
-                    .First(i => i.PersonId == id);
+                    .First(i => i.Idinstructor == id);
 
                 return Ok(MapInstructorToDto(instructor, _context));
             }
@@ -224,7 +224,7 @@ namespace app.Controllers
                 var secureKey = _configuration["JWT:SecureKey"];
                 var serializedToken = JwtTokenProvider.CreateToken(secureKey, 120, instructorDto.Email, "Instructor");
 
-                var returnDto = new LoginReturnDto { IdPerson = existingInstructor.PersonId, Token = serializedToken };
+                var returnDto = new LoginReturnDto { IdPerson = existingInstructor.Idinstructor, Token = serializedToken };
 
                 return Ok(returnDto);
             }
@@ -264,7 +264,7 @@ namespace app.Controllers
 
             var instructorDto = new InstructorDto
             {
-                Id = instructor.PersonId,
+                Id = instructor.Idinstructor,
                 FirstName = instructor.Person.FirstName,
                 Lastname = instructor.Person.Lastname,
                 Email = instructor.Person.Email,
