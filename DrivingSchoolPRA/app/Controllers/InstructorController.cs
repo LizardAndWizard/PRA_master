@@ -65,35 +65,7 @@ namespace app.Controllers
             }
         }
 
-        [HttpGet("{id}/reservations")]
-        public ActionResult<IEnumerable<ReservationDto>> GetReservations([FromRoute] int id)
-        {
-            try
-            {
-                var reservations = _context.Rezervations.Where(r => r.InstructorId == id);
-
-                if (reservations.IsNullOrEmpty())
-                {
-                    return StatusCode(404, "No reservations found.");
-                }
-
-                var reservationsDto = reservations.Select(reservation => new ReservationDto
-                {
-                    Id = reservation.Idrezervation,
-                    StudentId = reservation.StudentId,
-                    InstructorId = reservation.InstructorId,
-                    StateId = reservation.StateId,
-                    StartDate = reservation.StartDate,
-                    EndDate = reservation.EndDate,
-                });
-
-                return Ok(reservationsDto);
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
-            }
-        }
+        
 
         [HttpGet("{id}/reviews")]
         public ActionResult<IEnumerable<ReviewDto>> GetReviews([FromRoute] int id)
