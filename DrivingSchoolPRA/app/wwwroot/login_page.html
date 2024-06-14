@@ -61,6 +61,7 @@
         </section>
     </body>
     <script type="text/javascript">
+        logoutUser()
         let loginUrl = "";
         const emailInput = document.getElementById("email");
         const passwordInput = document.getElementById("password");
@@ -97,6 +98,13 @@
                     localStorage.removeItem("user_id");
                     localStorage.removeItem("user_type");
                 });
+        }
+
+        function logoutUser() {
+            localStorage.removeItem("token");
+            localStorage.removeItem("user");
+            localStorage.removeItem("user_id");
+            localStorage.removeItem("user_type");
         }
     </script>
 </html>
