@@ -97,8 +97,16 @@
 
     function displayNavbar(type) {
         const navbar = document.getElementById("navbar")
+        const navbarUserContainer = document.createElement("div")
+        navbarUserContainer.className = "d-flex gap-2"
         const userNameElement = document.createElement("p")
         userNameElement.innerHTML = userName
+        const logoutElement = document.createElement("a")
+        logoutElement.href = "login_page.html"
+        logoutElement.innerHTML = "Logout"
+        navbarUserContainer.appendChild(userNameElement)
+        navbarUserContainer.appendChild(logoutElement)
+
         linkListElement = document.createElement("ul")
         if (type == "student") {
             const listElement1 = document.createElement("li")
@@ -127,7 +135,7 @@
             linkListElement.appendChild(listElement1)
             linkListElement.appendChild(listElement2)
         }
-        navbar.appendChild(userNameElement)
+        navbar.appendChild(navbarUserContainer)
         navbar.appendChild(linkListElement)
     }
 

@@ -29,6 +29,11 @@ nav {
     height: 62px;
 }
 
+    nav a {
+        color: white;
+        text-decoration: none;
+    }
+
     nav ul {
         display: flex;
         gap: 24px;
@@ -38,11 +43,6 @@ nav {
         nav ul li {
             list-style: none;
         }
-
-            nav ul li a {
-                color: white;
-                text-decoration: none;
-            }
 
 /* =========================== */
 
@@ -313,4 +313,4 @@ nav {
     100% {
         transform: rotate(360deg);
     }
-} 
+}
