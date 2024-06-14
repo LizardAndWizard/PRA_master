@@ -131,6 +131,23 @@
         navbar.appendChild(linkListElement)
     }
 
+    function constructLoadingElement() {
+        const container = document.createElement('div');
+        container.className = "d-flex gap-2 align-self-center";
+
+        const loadingText = document.createElement("p");
+        loadingText.className = "mt-5";
+        loadingText.innerHTML = "Loading..."
+
+        const loadingCircle = document.createElement("span");
+        loadingCircle.className = "loader mt-5";
+
+        container.appendChild(loadingText);
+        container.appendChild(loadingCircle);
+
+        instructorCardContainerElement.appendChild(container);
+    }
+
     function filterByName() {
         ratingFilterElement.value = "show all";
         filterByRating();
@@ -152,6 +169,7 @@
     }
 
     function fetchInstructorList() {
+        constructLoadingElement()
         $.ajax({
             method: "GET",
             url: fetchInstructorListUrl,

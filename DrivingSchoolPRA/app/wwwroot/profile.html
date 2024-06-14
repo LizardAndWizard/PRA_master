@@ -23,19 +23,21 @@
       class="container d-flex justify-content-center align-items-center"
       style="margin-top: 200px"
     >
-      <div class="user-container box justify-content-between">
-        <span id="user-name"></span>
-        <p class="email" id="user-email"></p>
-        <p><i class="bi bi-clock-fill"></i>&nbsp;Hours driven: <span id="hours"></span></p>
+      <div id="user-container" class="user-container box justify-content-between">
       </div>
     </div>
   </body>
 <script type="text/javascript">
     const id = localStorage.getItem("user_id")
     const userName = localStorage.getItem("user");
-    const userNameElement = document.getElementById('user-name')
-    const userEmailElement = document.getElementById('user-email')
-    const hoursElement = document.getElementById('hours')
+    const userContainer = document.getElementById("user-container");
+    const userNameElement = document.createElement('span')
+    userNameElement.id = 'user-name';
+    const userEmailElement = document.createElement('p');
+    userEmailElement.id = 'user-email';
+    userEmailElement.className = 'email';
+    const hoursElement = document.createElement('p');
+    hoursElement.id = 'hours';
 
     displayNavbar()
 
@@ -62,6 +64,8 @@
         navbar.appendChild(linkListElement)
     }
 
+    constructLoadingElement()
+
     $.ajax({
         method: "GET",
         url: "http://localhost:5290/api/Student/" + id,
@@ -75,14 +79,44 @@
         });
 
     function displayUserData(data) {
+        userContainer.replaceChildren()
         userNameElement.innerHTML = data.firstName + " " + data.lastname
         userEmailElement.innerHTML = data.email
-        hoursElement.innerHTML = data.hoursDriven
+
+        const clockIcon = document.createElement("i")
+        clockIcon.className = "bi bi-clock-fill"
+        const numOfHours = document.createElement("span")
+        numOfHours.innerHTML = data.hoursDriven
+
+        hoursElement.appendChild(clockIcon)
+        hoursElement.innerHTML += "&nbsp;Hours driven: "
+        hoursElement.appendChild(numOfHours)
+
+        userContainer.appendChild(userNameElement)
+        userContainer.appendChild(userEmailElement)
+        userContainer.appendChild(hoursElement)
     }
 
     function displayUserInNavbar() {
         const usernameElement = document.getElementById("username");
         if (userName) usernameElement.innerHTML = userName;
+    }
+
+    function constructLoadingElement() {
+        const container = document.createElement('div');
+        container.className = "d-flex gap-2 align-self-center";
+
+        const loadingText = document.createElement("p");
+        loadingText.className = "mt-4";
+        loadingText.innerHTML = "Loading..."
+
+        const loadingCircle = document.createElement("span");
+        loadingCircle.className = "loader mt-4";
+
+        container.appendChild(loadingText);
+        container.appendChild(loadingCircle);
+
+        userContainer.appendChild(container);
     }
 </script>
 </html>
