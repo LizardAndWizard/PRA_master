@@ -49,6 +49,65 @@ namespace app.Controllers
             }
         }
 
+        [HttpGet("student/{id}")]
+        public ActionResult<IEnumerable<ReservationDto>> GetForStudent([FromRoute] string id)
+        {
+            try
+            {
+                var reservations = _context.Rezervations.Where(r => r.StudentId == id);
+
+                if (reservations.IsNullOrEmpty())
+                {
+                    return StatusCode(404, "No reservations found.");
+                }
+
+                var reservationsDto = reservations.Select(reservation => new ReservationDto
+                {
+                    Id = reservation.Idrezervation,
+                    StudentId = reservation.StudentId,
+                    InstructorId = reservation.InstructorId,
+                    StateId = reservation.StateId,
+                    StartDate = reservation.StartDate,
+                    EndDate = reservation.EndDate,
+                });
+
+                return Ok(reservationsDto);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+            }
+        }
+        [HttpGet("instructor/{id}")]
+        public ActionResult<IEnumerable<ReservationDto>> GetForInstructor([FromRoute] int id)
+        {
+            try
+            {
+                var reservations = _context.Rezervations.Where(r => r.InstructorId == id);
+
+                if (reservations.IsNullOrEmpty())
+                {
+                    return StatusCode(404, "No reservations found.");
+                }
+
+                var reservationsDto = reservations.Select(reservation => new ReservationDto
+                {
+                    Id = reservation.Idrezervation,
+                    StudentId = reservation.StudentId,
+                    InstructorId = reservation.InstructorId,
+                    StateId = reservation.StateId,
+                    StartDate = reservation.StartDate,
+                    EndDate = reservation.EndDate,
+                });
+
+                return Ok(reservationsDto);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+            }
+        }
+
         //// GET api/reservations/id
         [HttpGet("{id}")]
         public ActionResult<ReservationDto> Get(int id)
