@@ -75,7 +75,7 @@ nav {
         padding: 12px;
     }
 
-#popup-2 .modal-content__header {
+#rating-dialog .modal-content__header {
     flex-direction: column;
     text-align: center;
 }
@@ -239,6 +239,16 @@ nav {
         margin-bottom: 12px;
     }
 
+#rate-btn {
+    position: absolute;
+    right: 0;
+    height: 34px;
+    background-color: #3b82f6;
+    color: white;
+    border: 1px solid white;
+    border-radius: 4px;
+}
+
 .badge {
     width: 100%;
     margin-bottom: 24px;
@@ -313,4 +323,8 @@ nav {
     100% {
         transform: rotate(360deg);
     }
+}
+
+.hidden {
+    display: none !important;
 }

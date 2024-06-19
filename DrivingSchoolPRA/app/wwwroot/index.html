@@ -19,35 +19,10 @@
   <body>
     <nav id="navbar"></nav>
 
-    <!-- Modal 1 -->
-    <div class="modal fade" id="popup-1" aria-hidden="true">
-      <div class="modal-dialog" id="dialog-1">
+    <!-- Request Modal -->
+    <div class="modal fade" id="request-popup" aria-hidden="true">
+      <div class="modal-dialog" id="request-dialog">
         <!--Will be generated via API-->
-      </div>
-    </div>
-
-    <!-- Modal 2 -->
-    <div class="modal fade" id="popup-2" aria-hidden="true">
-      <div class="modal-dialog" id="dialog-2">
-        <div class="modal-content box">
-          <div class="modal-content__header">
-            <!-- Make it as a form where you can submit the rating you choose via API -->
-            <span>John Doe</span>
-            <p>Honda Civic</p>
-            <div class="rating-section">
-              <i class="bi bi-star-fill"></i>
-              <i class="bi bi-star-fill"></i>
-              <i class="bi bi-star-fill"></i>
-              <i class="bi bi-star-half"></i>
-              <i class="bi bi-star"></i>
-              (3.5)
-            </div>
-          </div>
-          <br />
-          <textarea placeholder="Comment"></textarea>
-          <br />
-          <button>Submit</button>
-        </div>
       </div>
     </div>
 
@@ -89,8 +64,7 @@
 
     const ratingFilterElement = document.getElementById("rating-filter-input");
     const nameFilterElement = document.getElementById("name-filter-input");
-    const dialog1 = document.getElementById("dialog-1");
-    const dialog2 = document.getElementById("dialog-2");
+    const requestDialog = document.getElementById("request-dialog");
 
     displayNavbar(userType)
     fetchInstructorList();
@@ -205,7 +179,7 @@
             },
         })
             .done(function (data) {
-                displayInstructorDialog(data);
+                displayRequestDialog(data);
             })
             .fail(function (err) {
                 alert(err.responseText);
@@ -219,8 +193,8 @@
         }
     }
 
-    function displayInstructorDialog(item) {
-        dialog1.replaceChildren();
+    function displayRequestDialog(item) {
+        requestDialog.replaceChildren();
         const contentBox = document.createElement("div");
         contentBox.classList.add("box");
         contentBox.classList.add("modal-content");
@@ -235,7 +209,7 @@
         const emailElement = document.createElement("p");
 
         nameElement.innerHTML = item.firstName + " " + item.lastname;
-        vehicleListElement.innerHTML = "Honda Civic";
+        vehicleListElement.innerHTML = JSON.stringify(item.vehicles)
         emailElement.innerHTML = item.email;
 
         infoSectionElement.appendChild(nameElement);
@@ -260,7 +234,7 @@
         contentBox.appendChild(textareaElement);
         contentBox.appendChild(brElement);
         contentBox.appendChild(requestBtnElement);
-        dialog1.appendChild(contentBox);
+        requestDialog.appendChild(contentBox);
     }
 
     function generateInstructorCard(item) {
@@ -281,7 +255,7 @@
         const instructorCardElement = document.createElement("div");
         instructorCardElement.className = "instructor-card";
         instructorCardElement.setAttribute("data-bs-toggle", "modal");
-        instructorCardElement.setAttribute("data-bs-target", "#popup-1");
+        instructorCardElement.setAttribute("data-bs-target", "#request-popup");
         instructorCardElement.addEventListener("click", () =>
             fetchInstructor(item.id)
         );

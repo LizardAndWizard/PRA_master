@@ -16,17 +16,32 @@
             integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo="
             crossorigin="anonymous"></script>
 </head>
-  <body>
+<body>
     <nav id="navbar"></nav>
 
-    <div
-      class="container d-flex justify-content-center align-items-center"
-      style="margin-top: 200px"
-    >
-      <div id="user-container" class="user-container box justify-content-between">
-      </div>
+    <!-- Rating Modal -->
+    <div class="modal fade" id="rating-popup" aria-hidden="true">
+        <div class="modal-dialog" id="rating-dialog">
+            <div class="modal-content box">
+                <div class="modal-content__header">
+                    <!--Content will be added through JavaScript-->
+                </div>
+                <br />
+                <textarea placeholder="Comment"></textarea>
+                <br />
+                <button onclick="submitRating()">Submit</button>
+            </div>
+        </div>
     </div>
-  </body>
+
+    <button id="rate-btn" data-bs-toggle="modal" data-bs-target="#rating-popup">Rate Instructor</button>
+
+    <div class="container d-flex justify-content-center align-items-center"
+         style="margin-top: 200px">
+        <div id="user-container" class="user-container box justify-content-between">
+        </div>
+    </div>
+</body>
 <script type="text/javascript">
     const id = localStorage.getItem("user_id")
     const userName = localStorage.getItem("user");
@@ -39,7 +54,30 @@
     const hoursElement = document.createElement('p');
     hoursElement.id = 'hours';
 
+    const ratingButton = document.getElementById('rate-btn')
+    ratingButton.className = 'hidden'
+
+    let isRatingChozen = false
+    let chozenRating = 0
+
+
+    const ratingDialogElement = document.getElementById('rating-dialog')
+
     displayNavbar()
+    constructLoadingElement()
+    populateModalWithInstructorData()
+
+    $.ajax({
+        method: "GET",
+        url: "http://localhost:5290/api/Student/" + id,
+        contentType: "application/json",
+    })
+        .done(function (data) {
+            displayUserData(data)
+        })
+        .fail(function (err) {
+            alert(err.responseText);
+        });
 
     function displayNavbar() {
         const navbar = document.getElementById("navbar")
@@ -64,20 +102,6 @@
         navbar.appendChild(linkListElement)
     }
 
-    constructLoadingElement()
-
-    $.ajax({
-        method: "GET",
-        url: "http://localhost:5290/api/Student/" + id,
-        contentType: "application/json",
-    })
-        .done(function (data) {
-            displayUserData(data)
-        })
-        .fail(function (err) {
-            alert(err.responseText);
-        });
-
     function displayUserData(data) {
         userContainer.replaceChildren()
         userNameElement.innerHTML = data.firstName + " " + data.lastname
@@ -87,6 +111,7 @@
         clockIcon.className = "bi bi-clock-fill"
         const numOfHours = document.createElement("span")
         numOfHours.innerHTML = data.hoursDriven
+        showRatingButton(data.hoursDriven)
 
         hoursElement.appendChild(clockIcon)
         hoursElement.innerHTML += "&nbsp;Hours driven: "
@@ -95,11 +120,6 @@
         userContainer.appendChild(userNameElement)
         userContainer.appendChild(userEmailElement)
         userContainer.appendChild(hoursElement)
-    }
-
-    function displayUserInNavbar() {
-        const usernameElement = document.getElementById("username");
-        if (userName) usernameElement.innerHTML = userName;
     }
 
     function constructLoadingElement() {
@@ -117,6 +137,96 @@
         container.appendChild(loadingCircle);
 
         userContainer.appendChild(container);
+    }
+
+    function populateModalWithInstructorData() {
+        const contentHeader = document.querySelector(".modal-content__header");
+        contentHeader.replaceChildren();
+
+        const instructorNameElement = document.createElement('span')
+        instructorNameElement.innerHTML = 'test name'
+
+        const vehicles = document.createElement('p')
+        vehicles.innerHTML = 'Honda Civic'
+
+        const ratingSection = document.createElement('div')
+        ratingSection.className = 'rating-section'
+        for (let i = 0; i < 5; i++) {
+            const ratingStar = document.createElement('i')
+            ratingStar.id = i+1
+            ratingStar.className = 'bi bi-star selectable'
+            ratingStar.addEventListener('mousemove', (e) => handleHover(e))
+            ratingStar.addEventListener('mouseleave', handleMouseLeave)
+            ratingStar.addEventListener('click', (e) => chooseRating(e))
+            ratingSection.appendChild(ratingStar)
+        }
+
+        contentHeader.appendChild(instructorNameElement)
+        contentHeader.appendChild(vehicles)
+        contentHeader.appendChild(ratingSection)
+    }
+
+    function handleHover(e) {
+        if (isRatingChozen) return
+        let t = e.target
+        if (t.classList.contains('bi')) {
+            t.className = 'bi bi-star-fill'
+            const star1 = document.getElementById('1')
+            const star2 = document.getElementById('2')
+            const star3 = document.getElementById('3')
+            const star4 = document.getElementById('4')
+
+            switch (t.id) {
+                case '2':
+                    star1.className = 'bi bi-star-fill'
+                    break
+                case '3':
+                    star1.className = 'bi bi-star-fill'
+                    star2.className = 'bi bi-star-fill'
+                    break
+                case '4':
+                    star1.className = 'bi bi-star-fill'
+                    star2.className = 'bi bi-star-fill'
+                    star3.className = 'bi bi-star-fill'
+                    break
+                case '5':
+                    star1.className = 'bi bi-star-fill'
+                    star2.className = 'bi bi-star-fill'
+                    star3.className = 'bi bi-star-fill'
+                    star4.className = 'bi bi-star-fill'
+                    break
+            }
+        }
+    }
+
+    function handleMouseLeave() {
+        if (isRatingChozen) return;
+        const star1 = document.getElementById('1')
+        star1.className = 'bi bi-star'
+        const star2 = document.getElementById('2')
+        star2.className = 'bi bi-star'
+        const star3 = document.getElementById('3')
+        star3.className = 'bi bi-star'
+        const star4 = document.getElementById('4')
+        star4.className = 'bi bi-star'
+        const star5 = document.getElementById('5')
+        star5.className = 'bi bi-star'
+    }
+
+    function chooseRating(e) {
+        isRatingChozen = true
+        chozenRating = parseInt(e.target.id)
+        console.log(chozenRating)
+    }
+
+    function submitRating() {
+        console.log('Your rating is ' + chozenRating)
+    }
+
+    function showRatingButton(hoursDriven) {
+        if (hoursDriven >= 30) {
+            ratingButton.classList.remove('hidden');
+        }
     }
 </script>
 </html>

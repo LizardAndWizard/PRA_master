@@ -16,6 +16,9 @@
       integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
       crossorigin="anonymous"
     ></script>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"
+            integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo="
+            crossorigin="anonymous"></script>
   </head>
   <body>
     <nav>
@@ -62,4 +65,19 @@
       </div>
     </section>
   </body>
+<script type="text/javascript">
+    const id = localStorage.getItem("user_id")
+
+    $.ajax({
+        method: "GET",
+        url: "http://localhost:5290/api/Reservations/student/" + id,
+        contentType: "application/json",
+    })
+        .done(function (data) {
+            console.log(data)
+        })
+        .fail(function (err) {
+            alert(err.responseText);
+        });
+</script>
 </html>
