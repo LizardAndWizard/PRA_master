@@ -89,7 +89,11 @@
                     localStorage.setItem("user_id", data.idPerson);
                     localStorage.setItem("user_type", type);
 
-                    window.location.href = "index.html";
+                    if (type == 'student') {
+                        window.location.href = "index.html";
+                    } else {
+                        window.location.href = 'requests.html'
+                    }
                 })
                 .fail(function (err) {
                     alert(err.responseText);

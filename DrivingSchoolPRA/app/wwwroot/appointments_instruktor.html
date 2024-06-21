@@ -18,13 +18,7 @@
     ></script>
   </head>
   <body>
-    <nav>
-      <p>Username</p>
-      <ul>
-        <li><a href="appointments_instruktor.html">Appointments</a></li>
-        <li><a href="requests.html">Requests</a></li>
-      </ul>
-    </nav>
+    <nav id="navbar"></nav>
 
     <section style="margin: 10px 25px; height: calc(100% - 82px)">
       <div class="box appointments-container">
@@ -61,4 +55,39 @@
       </div>
     </section>
   </body>
+<script type="text/javascript">
+    const userName = localStorage.getItem("user");
+
+    displayNavbar()
+
+    function displayNavbar() {
+        const navbar = document.getElementById("navbar")
+        const navbarUserContainer = document.createElement("div")
+        navbarUserContainer.className = "d-flex gap-2"
+        const userNameElement = document.createElement("p")
+        userNameElement.innerHTML = userName
+        const logoutElement = document.createElement("a")
+        logoutElement.href = "login_page.html"
+        logoutElement.innerHTML = "Logout"
+        navbarUserContainer.appendChild(userNameElement)
+        navbarUserContainer.appendChild(logoutElement)
+
+        linkListElement = document.createElement("ul")
+        const listElement1 = document.createElement("li")
+        const link1 = document.createElement("a")
+        link1.href = "requests.html"
+        link1.innerHTML = "Requests"
+        listElement1.appendChild(link1)
+        const listElement2 = document.createElement("li")
+        const link2 = document.createElement("a")
+        link2.href = "appointments_instruktor.html"
+        link2.innerHTML = "Appointments"
+        listElement2.appendChild(link2)
+        linkListElement.appendChild(listElement1)
+        linkListElement.appendChild(listElement2)
+
+        navbar.appendChild(navbarUserContainer)
+        navbar.appendChild(linkListElement)
+    }
+</script>
 </html>

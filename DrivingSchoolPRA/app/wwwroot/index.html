@@ -54,7 +54,6 @@
 <script type="text/javascript">
     const loginToken = localStorage.getItem("token");
     const userName = localStorage.getItem("user");
-    const userType = localStorage.getItem("user_type")
     const fetchInstructorListUrl = "http://localhost:5290/api/Instructor";
     const instructorCardContainerElement = document.getElementById(
         "instructor-card-container"
@@ -66,10 +65,10 @@
     const nameFilterElement = document.getElementById("name-filter-input");
     const requestDialog = document.getElementById("request-dialog");
 
-    displayNavbar(userType)
+    displayNavbar()
     fetchInstructorList();
 
-    function displayNavbar(type) {
+    function displayNavbar() {
         const navbar = document.getElementById("navbar")
         const navbarUserContainer = document.createElement("div")
         navbarUserContainer.className = "d-flex gap-2"
@@ -82,33 +81,18 @@
         navbarUserContainer.appendChild(logoutElement)
 
         linkListElement = document.createElement("ul")
-        if (type == "student") {
-            const listElement1 = document.createElement("li")
-            const link1 = document.createElement("a")
-            link1.href = "profile.html"
-            link1.innerHTML = "Profile"
-            listElement1.appendChild(link1)
-            const listElement2 = document.createElement("li")
-            const link2 = document.createElement("a")
-            link2.href = "appointments_polaznik.html"
-            link2.innerHTML = "Appointments"
-            listElement2.appendChild(link2)
-            linkListElement.appendChild(listElement1)
-            linkListElement.appendChild(listElement2)
-        } else {
-            const listElement1 = document.createElement("li")
-            const link1 = document.createElement("a")
-            link1.href = "requests.html"
-            link1.innerHTML = "Requests"
-            listElement1.appendChild(link1)
-            const listElement2 = document.createElement("li")
-            const link2 = document.createElement("a")
-            link2.href = "appointments_instruktor.html"
-            link2.innerHTML = "Appointments"
-            listElement2.appendChild(link2)
-            linkListElement.appendChild(listElement1)
-            linkListElement.appendChild(listElement2)
-        }
+        const listElement1 = document.createElement("li")
+        const link1 = document.createElement("a")
+        link1.href = "profile.html"
+        link1.innerHTML = "Profile"
+        listElement1.appendChild(link1)
+        const listElement2 = document.createElement("li")
+        const link2 = document.createElement("a")
+        link2.href = "appointments_polaznik.html"
+        link2.innerHTML = "Appointments"
+        listElement2.appendChild(link2)
+        linkListElement.appendChild(listElement1)
+        linkListElement.appendChild(listElement2)
         navbar.appendChild(navbarUserContainer)
         navbar.appendChild(linkListElement)
     }
