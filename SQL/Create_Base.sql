@@ -48,6 +48,7 @@ go
 create table Student (
     OIB char(11) primary key,
     PersonID int foreign key references Person(IDPerson) unique not null,
+	InstructorID int foreign key references Instructor(IDInstructor) null,
 	HoursDriven int default 0
 );
 go
@@ -200,18 +201,6 @@ values
 ('Misato', 'Katsuragi', 'mis.ato@nerv.com', '8ATeNb16/77BZqGYsEQQzzPM9BaHx7/uNmUd56Chkp8=', 'SY+h4g9bJzyaHTf1VIsCMA==');
 go
 
-insert into Student(OIB, PersonID, HoursDriven)
-values 
-('12345678901', 5, 0),
-('23469547885', 8, 12),
-('34698765645', 4, 8),
-('23433904849', 9, 2),
-('93796783748', 1, 24),
-('95738396078', 2, 27),
-('78484735583', 6, 7),
-('28466969468', 10, 13);
-go
-
 insert into Instructor(PersonID)
 values 
 (3),
@@ -219,6 +208,18 @@ values
 (11),
 (12),
 (13);
+go
+
+insert into Student(OIB, PersonID, InstructorID, HoursDriven)
+values 
+('12345678901', 5, 1, 0),
+('23469547885', 8, 5, 12),
+('34698765645', 4, 4, 8),
+('23433904849', 9, 2, 2),
+('93796783748', 1, null, 24),
+('95738396078', 2, 2, 27),
+('78484735583', 6, 3, 7),
+('28466969468', 10, 1, 13);
 go
 
 exec CreateVehicle 1, 6, 3, 1, '\Citroen_C3.jpg'
