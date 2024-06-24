@@ -10,21 +10,18 @@
       integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH"
       crossorigin="anonymous"
     />
-    <link rel="stylesheet" href="style.css" />
+    <link rel="stylesheet" href="StyleSheet.css" />
     <script
       src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
       integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
       crossorigin="anonymous"
     ></script>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"
+            integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo="
+            crossorigin="anonymous"></script>
   </head>
   <body>
-    <nav>
-      <p>Username</p>
-      <ul>
-        <li><a href="profile.html">Profile</a></li>
-        <li><a href="appointments_polaznik.html">Appointments</a></li>
-      </ul>
-    </nav>
+    <nav id="navbar"></nav>
 
     <section style="margin: 10px 25px; height: calc(100% - 82px)">
       <div class="box appointments-container">
@@ -62,4 +59,51 @@
       </div>
     </section>
   </body>
+<script type="text/javascript">
+    const id = localStorage.getItem("user_id")
+    const userName = localStorage.getItem("user");
+
+    displayNavbar()
+
+    function displayNavbar() {
+        const navbar = document.getElementById("navbar")
+        const navbarUserContainer = document.createElement("div")
+        navbarUserContainer.className = "d-flex gap-2"
+        const userNameElement = document.createElement("p")
+        userNameElement.innerHTML = userName
+        const logoutElement = document.createElement("a")
+        logoutElement.href = "login_page.html"
+        logoutElement.innerHTML = "Logout"
+        navbarUserContainer.appendChild(userNameElement)
+        navbarUserContainer.appendChild(logoutElement)
+
+        linkListElement = document.createElement("ul")
+        const listElement1 = document.createElement("li")
+        const link1 = document.createElement("a")
+        link1.href = "profile.html"
+        link1.innerHTML = "Profile"
+        listElement1.appendChild(link1)
+        const listElement2 = document.createElement("li")
+        const link2 = document.createElement("a")
+        link2.href = "appointments_polaznik.html"
+        link2.innerHTML = "Appointments"
+        listElement2.appendChild(link2)
+        linkListElement.appendChild(listElement1)
+        linkListElement.appendChild(listElement2)
+        navbar.appendChild(navbarUserContainer)
+        navbar.appendChild(linkListElement)
+    }
+
+    $.ajax({
+        method: "GET",
+        url: "http://localhost:5290/api/Reservations/student/" + id,
+        contentType: "application/json",
+    })
+        .done(function (data) {
+            console.log(data)
+        })
+        .fail(function (err) {
+            alert(err.responseText);
+        });
+</script>
 </html>
