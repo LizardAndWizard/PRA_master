@@ -80,28 +80,24 @@ nav {
     text-align: center;
 }
 
-.modal-content__header .picture {
-    display: flex;
-    background-color: #b0b0b0;
-    color: #646464;
+.modal-content__header .picture img {
+    width: 80px;
+    height: 80px;
     border-radius: 50%;
-    width: 100px;
-    align-items: center;
-    justify-content: center;
 }
 
-.box {
-    display: flex;
-    flex-direction: column;
-    background-color: white;
-    height: 338px;
-    width: 356px;
-    border: 1px solid black;
-    border-radius: 8px;
-    margin: auto auto;
-    -webkit-box-shadow: 5px 5px 15px -8px #000000 !important;
-    box-shadow: 5px 5px 15px -8px #000000 !important;
-}
+    .box {
+        display: flex;
+        flex-direction: column;
+        background-color: white;
+        height: 338px;
+        width: 356px;
+        border: 1px solid black;
+        border-radius: 8px;
+        margin: auto auto;
+        -webkit-box-shadow: 5px 5px 15px -8px #000000 !important;
+        box-shadow: 5px 5px 15px -8px #000000 !important;
+    }
 
     .box h1 {
         font-size: 28px;
