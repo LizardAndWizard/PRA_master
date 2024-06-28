@@ -11,6 +11,8 @@ public partial class Instructor
 
     public virtual Person Person { get; set; } = null!;
 
+    public virtual ICollection<Request> Requests { get; } = new List<Request>();
+
     public virtual ICollection<Review> Reviews { get; } = new List<Review>();
 
     public virtual ICollection<Rezervation> Rezervations { get; } = new List<Rezervation>();

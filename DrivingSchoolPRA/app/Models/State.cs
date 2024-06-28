@@ -9,5 +9,7 @@ public partial class State
 
     public string Name { get; set; } = null!;
 
+    public virtual ICollection<Request> Requests { get; } = new List<Request>();
+
     public virtual ICollection<Rezervation> Rezervations { get; } = new List<Rezervation>();
 }

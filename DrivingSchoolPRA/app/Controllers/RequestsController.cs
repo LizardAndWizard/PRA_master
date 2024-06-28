@@ -1,0 +1,104 @@
+﻿using app.DTOs;
+using app.Models;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.IdentityModel.Tokens;
+
+namespace app.Controllers
+{
+    [Route("api/[controller]")]
+    [ApiController]
+    public class RequestsController : ControllerBase
+    {
+        private readonly PraDrivingSchoolContext _context;
+
+        public RequestsController(PraDrivingSchoolContext context)
+        {
+            _context = context;
+        }
+
+        [HttpGet]
+        public ActionResult<IEnumerable<RequestDto>> Get()
+        {
+            try
+            {
+                var requests = _context.Requests;
+
+                if (requests.IsNullOrEmpty())
+                {
+                    return StatusCode(404, "No requests found.");
+                }
+
+                var requestsDto = requests.Select(request => new RequestDto
+                {
+                    Idrequest = request.Idrequest,
+                    StudentId= request.StudentId,
+                    InstructorId= request.InstructorId,
+                    StateId= request.StateId,
+                });
+
+                return Ok(requestsDto);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+            }
+        }
+        
+        [HttpGet("instructor/{id}")]
+        public ActionResult<IEnumerable<RequestDto>> GetForInstructor(int id)
+        {
+            try
+            {
+                var requests = _context.Requests.Where(r => r.InstructorId == id);
+
+                if (requests.IsNullOrEmpty())
+                {
+                    return StatusCode(404, "No requests found.");
+                }
+
+                var requestsDto = requests.Select(request => new RequestDto
+                {
+                    Idrequest = request.Idrequest,
+                    StudentId= request.StudentId,
+                    InstructorId= request.InstructorId,
+                    StateId= request.StateId,
+                });
+
+                return Ok(requestsDto);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+            }
+        }
+
+        [HttpPost]
+        public ActionResult AddRequest([FromBody] RequestDto requestDto)
+        {
+            try
+            {
+                if (!ModelState.IsValid)
+                {
+                    return BadRequest(ModelState);
+                }
+
+                var request = new Request
+                {
+                    StudentId = requestDto.StudentId,
+                    InstructorId = requestDto.InstructorId,
+                    StateId = requestDto.StateId,
+                };
+
+                _context.Add(request);
+                _context.SaveChanges();
+
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+            }
+        }
+    }
+}
