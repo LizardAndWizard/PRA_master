@@ -45,13 +45,6 @@ create table Instructor (
 );
 go
 
-create table Student (
-    OIB char(11) primary key,
-    PersonID int foreign key references Person(IDPerson) unique not null,
-	HoursDriven int default 0
-);
-go
-
 create table Vehicle (
     IDVehicle int primary key identity (1, 1),
     ColourID int foreign key references Colour(IDColour) not null,
@@ -59,6 +52,14 @@ create table Vehicle (
 	ModelID int foreign key references Model(IDModel) not null,
 	InstructorID int foreign key references Instructor(IDInstructor) not null,
 	Picture varbinary(max)
+);
+go
+
+create table Student (
+    OIB char(11) primary key,
+    PersonID int foreign key references Person(IDPerson) unique not null,
+	VehicleID int foreign key references Vehicle(IDVehicle) null,
+	HoursDriven int default 0
 );
 go
 
@@ -217,18 +218,6 @@ values
 (13);
 go
 
-insert into Student(OIB, PersonID, HoursDriven)
-values 
-('12345678901', 5, 0),
-('23469547885', 8, 12),
-('34698765645', 4, 8),
-('23433904849', 9, 2),
-('93796783748', 1, 24),
-('95738396078', 2, 27),
-('78484735583', 6, 7),
-('28466969468', 10, 13);
-go
-
 exec CreateVehicle 1, 6, 3, 1, '\Citroen_C3.jpg'
 exec CreateVehicle 4, 6, 4, 3, '\Fiat_500.jpg'
 exec CreateVehicle 6, 6, 6, 2, '\Honda_Civic.jpg'
@@ -237,6 +226,18 @@ exec CreateVehicle 5, 6, 9, 3, '\Tesla_Model_2.jpg'
 exec CreateVehicle 2, 6, 10, 3, '\VW_Beetle.jpg'
 exec CreateVehicle 3, 6, 11, 4, '\Chevy_Malibu.jpg'
 exec CreateVehicle 5, 6, 12, 5, '\Renault_Alpine.jpg'
+go
+
+insert into Student(OIB, PersonID, VehicleID, HoursDriven)
+values 
+('12345678901', 5, 3, 0),
+('23469547885', 8, 2, 12),
+('34698765645', 4, 4, 8),
+('23433904849', 9, null, 2),
+('93796783748', 1, null, 24),
+('95738396078', 2, null, 27),
+('78484735583', 6, 5, 7),
+('28466969468', 10, 1, 13);
 go
 
 insert into Review(StudentID, InstructorID, Grade, Comment)
