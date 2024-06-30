@@ -32,15 +32,14 @@ namespace app.Controllers
                     return StatusCode(404, "No avaliable students.");
                 }
 
-                var students = _context.Students.Include(s => s.Person).Select(s => new StudentDto
-                {
-                    Id = s.PersonId,
-                    FirstName = s.Person.FirstName,
-                    Lastname = s.Person.Lastname,
-                    Email = s.Person.Email,
-                    HoursDriven = s.HoursDriven,
-                    Oib = s.Oib
-                });
+                var students = _context.Students
+                    .Include(s => s.Person)
+                    .Include(s => s.Vehicle)
+                    .Include(s => s.Vehicle.Model)
+                    .Include(s => s.Vehicle.Model.Brand)
+                    .Include(s => s.Vehicle.Colour)
+                    .Include(s => s.Vehicle.Category)
+                    .Select(s => MapStudentToDto(s));
 
                 return Ok(students);
             }
@@ -61,16 +60,15 @@ namespace app.Controllers
                     return StatusCode(404, "No avaliable students.");
                 }
 
-                var s = _context.Students.Include(s => s.Person).First(s => s.PersonId == id);
-                var studentDto = new StudentDto
-                {
-                    Id = s.PersonId,
-                    FirstName = s.Person.FirstName,
-                    Lastname = s.Person.Lastname,
-                    Email = s.Person.Email,
-                    HoursDriven = s.HoursDriven,
-                    Oib = s.Oib
-                };
+                var s = _context.Students
+                    .Include(s => s.Person)
+                    .Include(s => s.Vehicle)
+                    .Include(s => s.Vehicle.Model)
+                    .Include(s => s.Vehicle.Model.Brand)
+                    .Include(s => s.Vehicle.Colour)
+                    .Include(s => s.Vehicle.Category)
+                    .First(s => s.PersonId == id);
+                var studentDto = MapStudentToDto(s);
 
                 return Ok(studentDto);
             }
@@ -78,6 +76,35 @@ namespace app.Controllers
             {
                 return StatusCode(500, e.Message);
             }
+        }
+
+        private static StudentDto MapStudentToDto(Student student)
+        {
+            var studentDto = new StudentDto 
+            {
+                Id = student.PersonId,
+                FirstName = student.Person.FirstName,
+                Lastname = student.Person.Lastname,
+                Email = student.Person.Email,
+                HoursDriven = student.HoursDriven,
+                Oib = student.Oib
+            };
+
+            if (student.VehicleId != null)
+            {
+                studentDto.VehicleId = student.VehicleId;
+                studentDto.Vehicle = new VehicleDto
+                {
+                    Idvehicle = student.Vehicle.Idvehicle,
+                    Model = student.Vehicle.Model.Name,
+                    Brand = student.Vehicle.Model.Brand.Name,
+                    Category = student.Vehicle.Category.Name,
+                    Colour = student.Vehicle.Colour.Name,
+                    Picture = null //vehicle.Picture
+                };
+            }
+
+            return studentDto;
         }
 
         [HttpPost("[action]")]
@@ -110,7 +137,8 @@ namespace app.Controllers
                 {
                     Oib = studentDto.Oib,
                     HoursDriven = studentDto.HoursDriven,
-                    PersonId = id
+                    PersonId = id,
+                    VehicleId = studentDto.VehicleId
                 };
                 _context.Students.Add(student);
                 _context.SaveChanges();

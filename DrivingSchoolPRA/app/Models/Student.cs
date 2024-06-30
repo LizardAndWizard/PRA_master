@@ -9,6 +9,8 @@ public partial class Student
 
     public int PersonId { get; set; }
 
+    public int? VehicleId { get; set; }
+
     public int? HoursDriven { get; set; }
 
     public virtual Person Person { get; set; } = null!;
@@ -18,4 +20,6 @@ public partial class Student
     public virtual ICollection<Review> Reviews { get; } = new List<Review>();
 
     public virtual ICollection<Rezervation> Rezervations { get; } = new List<Rezervation>();
+
+    public virtual Vehicle? Vehicle { get; set; }
 }

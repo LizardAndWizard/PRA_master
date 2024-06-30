@@ -5,6 +5,7 @@ namespace app.DTOs
     public class StudentDto
     {
         public int Id { get; set; }
+
         public string FirstName { get; set; } = null!;
 
         public string Lastname { get; set; } = null!;
@@ -16,5 +17,9 @@ namespace app.DTOs
         public string Oib { get; set; } = null!;
 
         public string Password { get; set; } = null!;
+
+        public int? VehicleId { get; set; }
+
+        public VehicleDto? Vehicle { get; set; }
     }
 }
