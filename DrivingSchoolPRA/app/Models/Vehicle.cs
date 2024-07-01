@@ -24,4 +24,6 @@ public partial class Vehicle
     public virtual Instructor Instructor { get; set; } = null!;
 
     public virtual Model Model { get; set; } = null!;
+
+    public virtual ICollection<Student> Students { get; } = new List<Student>();
 }
