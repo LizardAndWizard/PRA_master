@@ -61,6 +61,8 @@
         "instructor-card-container"
     );
 
+    let selectedVehicle = null
+
     let instructorList = [];
 
     const ratingFilterElement = document.getElementById("rating-filter-input");
@@ -188,23 +190,42 @@
         const contentHeader = document.createElement("div");
         contentHeader.className = "modal-content__header";
 
+        selectedVehicle = item.vehicles[0]
+
         const infoSectionElement = document.createElement("div");
         infoSectionElement.className = "info";
 
         const nameElement = document.createElement("span");
         const emailElement = document.createElement("p");
+        const selectedVehicleElement = document.createElement('p')
+        selectedVehicleElement.className = 'selected-vehicle'
 
         nameElement.innerHTML = item.firstName + " " + item.lastname;
         emailElement.innerHTML = item.email;
+        selectedVehicleElement.innerHTML = `${selectedVehicle.brand} ${selectedVehicle.model}`
 
         infoSectionElement.appendChild(nameElement);
         infoSectionElement.appendChild(emailElement);
+        infoSectionElement.appendChild(selectedVehicleElement);
+
 
         const pictureSectionElement = document.createElement("div");
         pictureSectionElement.className = "picture";
         const vehiclePicture = document.createElement('img')
+        vehiclePicture.className = 'vehicle-picture'
         vehiclePicture.src = `data:image/png;base64,${item.vehicles[0].picture}`
+
+        const changePictureButtonRight = document.createElement('button')
+
+        if (item.vehicles.length > 1) {
+            const changePictureButtonIconRight = document.createElement('i')
+            changePictureButtonIconRight.className = 'bi bi-caret-right-fill'
+            changePictureButtonIconRight.addEventListener('click', () => changeVehicle(item.vehicles, selectedVehicle))
+            changePictureButtonRight.appendChild(changePictureButtonIconRight)
+        }
+
         pictureSectionElement.appendChild(vehiclePicture)
+        if (item.vehicles.length > 1) pictureSectionElement.appendChild(changePictureButtonRight)
 
         contentHeader.appendChild(infoSectionElement);
         contentHeader.appendChild(pictureSectionElement);
@@ -269,6 +290,26 @@
             }
         }
         ratingContainer.innerHTML += `(${numStars})`;
+    }
+
+    function changeVehicle(vehicles, currentVehicle) {
+        if (currentVehicle !== null) {
+            for (const k in vehicles) {
+                if (vehicles[k].picture === currentVehicle.picture) {
+                    if (parseInt(k) + 1 > vehicles.length - 1) {
+                        currentVehicle = vehicles[0]
+                    } else {
+                        currentVehicle = vehicles[parseInt(k) + 1]
+                    }
+                    const picture = document.querySelector('.vehicle-picture')
+                    picture.src = `data:image/png;base64,${currentVehicle.picture}`
+                    const text = document.querySelector('.selected-vehicle')
+                    text.innerHTML = `${currentVehicle.brand} ${currentVehicle.model}`
+                    selectedVehicle = currentVehicle
+                    return;
+                }
+            }
+        }
     }
 
     function displayInstructorRating() {

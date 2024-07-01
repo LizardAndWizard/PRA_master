@@ -105,5 +105,17 @@
         .fail(function (err) {
             alert(err.responseText);
         });
+
+    function displayAppointments() {
+        const appointment = document.createElement('div')
+        appointment.className = 'appointment'
+        const day = document.createElement('span')
+        // dodati dan u element
+        const date = document.createElement('p')
+        // dodati datum u element
+        const state = document.createElement('div')
+        state.className = 'badge'
+        // dodati state u element
+    }
 </script>
 </html>

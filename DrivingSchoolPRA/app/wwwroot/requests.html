@@ -79,5 +79,39 @@
           navbar.appendChild(navbarUserContainer)
           navbar.appendChild(linkListElement)
       }
+
+      function fetchRequests(id) {
+          $.ajax({
+              method: "GET",
+              url: "http://localhost:5290/api/Requests/instructor/" + id,
+              contentType: "application/json",
+          })
+              .done(function (data) {
+                  // display requests
+              })
+              .fail(function (err) {
+                  alert(err.responseText);
+              });
+      }
+
+      function displayRequests() {
+          const card = document.createElement('div')
+          card.className = 'request-card box'
+          const studentName = document.createElement('span')
+          // add name
+          const cardActions = document.createElement('div')
+          cardActions.className = 'request-card__actions'
+          const acceptBtn = document.createElement('button')
+          acceptBtn.className = 'accept-btn'
+          acceptBtn.innerHTML = 'Accept'
+          acceptBtn.addEventListener('click', () => acceptRequest)
+          const declineBtn = document.createElement('button')
+          declineBtn.className = 'decline-btn'
+          declineBtn.innerHTML = 'Decline'
+      }
+
+      function acceptRequest() {
+          // update request
+      }
   </script>
 </html>

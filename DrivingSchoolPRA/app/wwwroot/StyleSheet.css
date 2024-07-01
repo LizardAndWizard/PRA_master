@@ -75,6 +75,13 @@ nav {
         padding: 12px;
     }
 
+    .modal-content__header button {
+        color: gray !important;
+        background-color: white !important;
+        width: 20px !important;
+        padding-left: 0 !important;
+    }
+
 #rating-dialog .modal-content__header {
     flex-direction: column;
     text-align: center;

@@ -27,7 +27,7 @@
                     <!--Content will be added through JavaScript-->
                 </div>
                 <br />
-                <textarea placeholder="Comment"></textarea>
+                <textarea id="comment-area" placeholder="Comment"></textarea>
                 <br />
                 <button onclick="submitRating()">Submit</button>
             </div>
@@ -45,6 +45,7 @@
 <script type="text/javascript">
     const id = localStorage.getItem("user_id")
     const userName = localStorage.getItem("user");
+    const oib = localStorage.getItem('user_OIB')
     const userContainer = document.getElementById("user-container");
     const userNameElement = document.createElement('span')
     userNameElement.id = 'user-name';
@@ -53,6 +54,8 @@
     userEmailElement.className = 'email';
     const hoursElement = document.createElement('p');
     hoursElement.id = 'hours';
+
+    let instructorID = 0
 
     const ratingButton = document.getElementById('rate-btn')
     ratingButton.className = 'hidden'
@@ -74,6 +77,8 @@
     })
         .done(function (data) {
             displayUserData(data)
+            console.log(data)
+            instructorID = data.instructorId
         })
         .fail(function (err) {
             alert(err.responseText);
@@ -103,6 +108,7 @@
     }
 
     function displayUserData(data) {
+        console.log(data)
         userContainer.replaceChildren()
         userNameElement.innerHTML = data.firstName + " " + data.lastname
         userEmailElement.innerHTML = data.email
@@ -216,11 +222,28 @@
     function chooseRating(e) {
         isRatingChozen = true
         chozenRating = parseInt(e.target.id)
-        console.log(chozenRating)
     }
 
     function submitRating() {
-        console.log('Your rating is ' + chozenRating)
+        const reviewComment = document.getElementById('comment-area')
+        const reviewBody = {
+            studentOIB: oib,
+            instructorId: instructorID,
+            grade: chozenRating,
+            comment: reviewComment.value
+        }
+        $.ajax({
+            method: "POST",
+            url: "http://localhost:5290/api/Review",
+            contentType: "application/json",
+            data: JSON.stringify(reviewBody)
+        })
+            .done(function (data) {
+                console.log(data)
+            })
+            .fail(function (err) {
+                alert(err.responseText);
+            });
     }
 
     function showRatingButton(hoursDriven) {
