@@ -2,7 +2,8 @@
 {
     public class UpdateStudentDto
     {
-        public int? InstructorId { get; set; }
-        public int? VehicleId { get; set; }
+        public int? InstructorId { get; set; } = 0;
+        public int? VehicleId { get; set; } = 0;
+        public int? HoursDriven { get; set; } = 0;
     }
 }

@@ -203,14 +203,19 @@ namespace app.Controllers
 
                 var student = _context.Students.FirstOrDefault(x => x.PersonId == id);
 
-                if (studentDto.InstructorId != null)
+                if (studentDto.InstructorId != 0)
                 {
                     student.InstructorId = studentDto.InstructorId;
                 }
 
-                if (studentDto.VehicleId != null)
+                if (studentDto.VehicleId != 0)
                 {
                     student.VehicleId = studentDto.VehicleId;
+                }
+
+                if (studentDto.HoursDriven != 0)
+                {
+                    student.HoursDriven = studentDto.HoursDriven;
                 }
 
                 _context.SaveChanges();
