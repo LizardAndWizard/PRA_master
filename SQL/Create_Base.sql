@@ -58,6 +58,7 @@ go
 create table Student (
     OIB char(11) primary key,
     PersonID int foreign key references Person(IDPerson) unique not null,
+	InstructorID int foreign key references Instructor(IDInstructor) null,
 	VehicleID int foreign key references Vehicle(IDVehicle) null,
 	HoursDriven int default 0
 );
@@ -82,6 +83,7 @@ create table Request (
 	IDRequest int primary key identity (1, 1),
 	StudentID char(11) foreign key references Student(OIB) not null,
 	InstructorID int foreign key references Instructor(IDInstructor) not null,
+	VehicleID int foreign key references Vehicle(IDVehicle) not null,
 	StateID int foreign key references [State](IDState) not null
 );
 go
@@ -228,16 +230,16 @@ exec CreateVehicle 3, 6, 11, 4, 'C:\Users\Paulo\Desktop\PRASS\PRA_master\SQL\PRA
 exec CreateVehicle 5, 6, 12, 5, 'C:\Users\Paulo\Desktop\PRASS\PRA_master\SQL\PRA_slike\Renault_Alpine.jpg'
 go
 
-insert into Student(OIB, PersonID, VehicleID, HoursDriven)
+insert into Student(OIB, PersonID, InstructorID, VehicleID, HoursDriven)
 values 
-('12345678901', 5, 3, 0),
-('23469547885', 8, 2, 12),
-('34698765645', 4, 4, 8),
-('23433904849', 9, null, 2),
-('93796783748', 1, null, 24),
-('95738396078', 2, null, 27),
-('78484735583', 6, 5, 7),
-('28466969468', 10, 1, 13);
+('12345678901', 5, 2, 3, 0),
+('23469547885', 8, 3, 6, 12),
+('34698765645', 4, 2, 4, 8),
+('23433904849', 9, null, null, 2),
+('93796783748', 1, null, null, 24),
+('95738396078', 2, null, null, 27),
+('78484735583', 6, 3, 2, 7),
+('28466969468', 10, 1, 1, 13);
 go
 
 insert into Review(StudentID, InstructorID, Grade, Comment)
@@ -247,14 +249,14 @@ values
 ('12345678901',2, 5, 'Dobar momak. Smiren i korektan. Uvijek ce ti napomenuti ako napravis neku gresku pa dosta naucis.');
 go
 
-insert into Request(StudentID, InstructorID, StateID)
+insert into Request(StudentID, InstructorID, VehicleID, StateID)
 values
-('12345678901', 5, 2),
-('12345678901', 2, 1),
-('28466969468', 1, 1),
-('34698765645', 2, 1),
-('78484735583', 3, 1),
-('23469547885', 3, 1)
+('12345678901', 5, 8, 2),
+('12345678901', 2, 3, 1),
+('28466969468', 1, 1, 1),
+('34698765645', 2, 4, 1),
+('78484735583', 3, 2, 1),
+('23469547885', 3, 6, 1)
 
 insert into Rezervation(StudentID, InstructorID, StateID, StartDate, EndDate)
 values
