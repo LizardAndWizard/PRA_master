@@ -87,7 +87,8 @@ namespace app.Controllers
                 Lastname = student.Person.Lastname,
                 Email = student.Person.Email,
                 HoursDriven = student.HoursDriven,
-                Oib = student.Oib
+                Oib = student.Oib,
+                InstructorId = student.InstructorId
             };
 
             if (student.VehicleId != null)
@@ -175,13 +176,42 @@ namespace app.Controllers
                 var secureKey = _configuration["JWT:SecureKey"];
                 var serializedToken = JwtTokenProvider.CreateToken(secureKey, 120, studentDto.Email, "Student");
 
-                var returnDto = new LoginReturnDto { IdPerson = existingStudent.PersonId, Token = serializedToken };
+                var returnDto = new LoginReturnDto 
+                { 
+                    IdPerson = existingStudent.PersonId, 
+                    Token = serializedToken,
+                    OIB = existingStudent.Oib
+                };
 
                 return Ok(returnDto);
             }
             catch (Exception ex)
             {
                 return StatusCode(500, ex.Message);
+            }
+        }
+
+        [HttpPut]
+        public ActionResult<StudentDto> UpdateStudent(int id, [FromBody] StudentDto studentDto)
+        {
+            try
+            {
+                if (!ModelState.IsValid)
+                {
+                    return BadRequest("Student does not contain valid data");
+                }
+
+                var student = _context.Students.FirstOrDefault(x => x.PersonId == id);
+                student.InstructorId = studentDto.InstructorId;
+                student.VehicleId = studentDto.VehicleId;
+
+                _context.SaveChanges();
+
+                return Ok(studentDto);
+            }
+            catch (Exception e)
+            {
+                return StatusCode(500, e.Message);
             }
         }
 

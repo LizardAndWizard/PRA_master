@@ -25,5 +25,7 @@ public partial class Vehicle
 
     public virtual Model Model { get; set; } = null!;
 
+    public virtual ICollection<Request> Requests { get; } = new List<Request>();
+
     public virtual ICollection<Student> Students { get; } = new List<Student>();
 }

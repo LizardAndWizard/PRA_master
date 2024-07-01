@@ -50,7 +50,7 @@ public partial class PraDrivingSchoolContext : DbContext
 
         modelBuilder.Entity<Brand>(entity =>
         {
-            entity.HasKey(e => e.Idbrand).HasName("PK__Brand__A8EBD9B73D2842B4");
+            entity.HasKey(e => e.Idbrand).HasName("PK__Brand__A8EBD9B768351320");
 
             entity.ToTable("Brand");
 
@@ -60,7 +60,7 @@ public partial class PraDrivingSchoolContext : DbContext
 
         modelBuilder.Entity<Category>(entity =>
         {
-            entity.HasKey(e => e.Idcategory).HasName("PK__Category__1AA1EC66125DD5FC");
+            entity.HasKey(e => e.Idcategory).HasName("PK__Category__1AA1EC66C7A0DEC3");
 
             entity.ToTable("Category");
 
@@ -70,7 +70,7 @@ public partial class PraDrivingSchoolContext : DbContext
 
         modelBuilder.Entity<Colour>(entity =>
         {
-            entity.HasKey(e => e.Idcolour).HasName("PK__Colour__004935CDD78EE7CF");
+            entity.HasKey(e => e.Idcolour).HasName("PK__Colour__004935CDDFA73C69");
 
             entity.ToTable("Colour");
 
@@ -80,7 +80,7 @@ public partial class PraDrivingSchoolContext : DbContext
 
         modelBuilder.Entity<Instructor>(entity =>
         {
-            entity.HasKey(e => e.Idinstructor).HasName("PK__Instruct__928E86C4F24CF81E");
+            entity.HasKey(e => e.Idinstructor).HasName("PK__Instruct__928E86C4272C354D");
 
             entity.ToTable("Instructor");
 
@@ -95,7 +95,7 @@ public partial class PraDrivingSchoolContext : DbContext
 
         modelBuilder.Entity<Model>(entity =>
         {
-            entity.HasKey(e => e.Idmodel).HasName("PK__Model__9C90CDAC75D70871");
+            entity.HasKey(e => e.Idmodel).HasName("PK__Model__9C90CDAC1F266903");
 
             entity.ToTable("Model");
 
@@ -111,7 +111,7 @@ public partial class PraDrivingSchoolContext : DbContext
 
         modelBuilder.Entity<Person>(entity =>
         {
-            entity.HasKey(e => e.Idperson).HasName("PK__Person__78E1C52449AF1422");
+            entity.HasKey(e => e.Idperson).HasName("PK__Person__78E1C524710E960E");
 
             entity.ToTable("Person");
 
@@ -127,7 +127,7 @@ public partial class PraDrivingSchoolContext : DbContext
 
         modelBuilder.Entity<Request>(entity =>
         {
-            entity.HasKey(e => e.Idrequest).HasName("PK__Request__387A59D8076A25F8");
+            entity.HasKey(e => e.Idrequest).HasName("PK__Request__387A59D8A1A3ABA6");
 
             entity.ToTable("Request");
 
@@ -139,26 +139,32 @@ public partial class PraDrivingSchoolContext : DbContext
                 .IsUnicode(false)
                 .IsFixedLength()
                 .HasColumnName("StudentID");
+            entity.Property(e => e.VehicleId).HasColumnName("VehicleID");
 
             entity.HasOne(d => d.Instructor).WithMany(p => p.Requests)
                 .HasForeignKey(d => d.InstructorId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__Request__Instruc__571DF1D5");
+                .HasConstraintName("FK__Request__Instruc__5812160E");
 
             entity.HasOne(d => d.State).WithMany(p => p.Requests)
                 .HasForeignKey(d => d.StateId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__Request__StateID__5812160E");
+                .HasConstraintName("FK__Request__StateID__59FA5E80");
 
             entity.HasOne(d => d.Student).WithMany(p => p.Requests)
                 .HasForeignKey(d => d.StudentId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__Request__Student__5629CD9C");
+                .HasConstraintName("FK__Request__Student__571DF1D5");
+
+            entity.HasOne(d => d.Vehicle).WithMany(p => p.Requests)
+                .HasForeignKey(d => d.VehicleId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK__Request__Vehicle__59063A47");
         });
 
         modelBuilder.Entity<Review>(entity =>
         {
-            entity.HasKey(e => e.Idreview).HasName("PK__Review__E5003B6FC520B1CE");
+            entity.HasKey(e => e.Idreview).HasName("PK__Review__E5003B6FCF133B07");
 
             entity.ToTable("Review");
 
@@ -173,17 +179,17 @@ public partial class PraDrivingSchoolContext : DbContext
             entity.HasOne(d => d.Instructor).WithMany(p => p.Reviews)
                 .HasForeignKey(d => d.InstructorId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__Review__Instruct__5165187F");
+                .HasConstraintName("FK__Review__Instruct__52593CB8");
 
             entity.HasOne(d => d.Student).WithMany(p => p.Reviews)
                 .HasForeignKey(d => d.StudentId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__Review__StudentI__5070F446");
+                .HasConstraintName("FK__Review__StudentI__5165187F");
         });
 
         modelBuilder.Entity<Rezervation>(entity =>
         {
-            entity.HasKey(e => e.Idrezervation).HasName("PK__Rezervat__1074A5E342B96AF7");
+            entity.HasKey(e => e.Idrezervation).HasName("PK__Rezervat__1074A5E34BB146B7");
 
             entity.ToTable("Rezervation");
 
@@ -203,22 +209,22 @@ public partial class PraDrivingSchoolContext : DbContext
             entity.HasOne(d => d.Instructor).WithMany(p => p.Rezervations)
                 .HasForeignKey(d => d.InstructorId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__Rezervati__Instr__5BE2A6F2");
+                .HasConstraintName("FK__Rezervati__Instr__5DCAEF64");
 
             entity.HasOne(d => d.State).WithMany(p => p.Rezervations)
                 .HasForeignKey(d => d.StateId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__Rezervati__State__5CD6CB2B");
+                .HasConstraintName("FK__Rezervati__State__5EBF139D");
 
             entity.HasOne(d => d.Student).WithMany(p => p.Rezervations)
                 .HasForeignKey(d => d.StudentId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__Rezervati__Stude__5AEE82B9");
+                .HasConstraintName("FK__Rezervati__Stude__5CD6CB2B");
         });
 
         modelBuilder.Entity<State>(entity =>
         {
-            entity.HasKey(e => e.Idstate).HasName("PK__State__8605303419E4C1CE");
+            entity.HasKey(e => e.Idstate).HasName("PK__State__86053034C8E27154");
 
             entity.ToTable("State");
 
@@ -228,11 +234,11 @@ public partial class PraDrivingSchoolContext : DbContext
 
         modelBuilder.Entity<Student>(entity =>
         {
-            entity.HasKey(e => e.Oib).HasName("PK__Student__CB394B3FA83EFC29");
+            entity.HasKey(e => e.Oib).HasName("PK__Student__CB394B3F24C71B94");
 
             entity.ToTable("Student");
 
-            entity.HasIndex(e => e.PersonId, "UQ__Student__AA2FFB843C1866AC").IsUnique();
+            entity.HasIndex(e => e.PersonId, "UQ__Student__AA2FFB848CB62439").IsUnique();
 
             entity.Property(e => e.Oib)
                 .HasMaxLength(11)
@@ -240,8 +246,13 @@ public partial class PraDrivingSchoolContext : DbContext
                 .IsFixedLength()
                 .HasColumnName("OIB");
             entity.Property(e => e.HoursDriven).HasDefaultValueSql("((0))");
+            entity.Property(e => e.InstructorId).HasColumnName("InstructorID");
             entity.Property(e => e.PersonId).HasColumnName("PersonID");
             entity.Property(e => e.VehicleId).HasColumnName("VehicleID");
+
+            entity.HasOne(d => d.Instructor).WithMany(p => p.Students)
+                .HasForeignKey(d => d.InstructorId)
+                .HasConstraintName("FK__Student__Instruc__4CA06362");
 
             entity.HasOne(d => d.Person).WithOne(p => p.Student)
                 .HasForeignKey<Student>(d => d.PersonId)
@@ -250,12 +261,12 @@ public partial class PraDrivingSchoolContext : DbContext
 
             entity.HasOne(d => d.Vehicle).WithMany(p => p.Students)
                 .HasForeignKey(d => d.VehicleId)
-                .HasConstraintName("FK__Student__Vehicle__4CA06362");
+                .HasConstraintName("FK__Student__Vehicle__4D94879B");
         });
 
         modelBuilder.Entity<TimeSlot>(entity =>
         {
-            entity.HasKey(e => e.IdtimeSlot).HasName("PK__TimeSlot__3D1FABF106A284B5");
+            entity.HasKey(e => e.IdtimeSlot).HasName("PK__TimeSlot__3D1FABF1F37CED85");
 
             entity.ToTable("TimeSlot");
 
@@ -266,12 +277,12 @@ public partial class PraDrivingSchoolContext : DbContext
             entity.HasOne(d => d.Rezervation).WithMany(p => p.TimeSlots)
                 .HasForeignKey(d => d.RezervationId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__TimeSlot__Rezerv__60A75C0F");
+                .HasConstraintName("FK__TimeSlot__Rezerv__628FA481");
         });
 
         modelBuilder.Entity<Vehicle>(entity =>
         {
-            entity.HasKey(e => e.Idvehicle).HasName("PK__Vehicle__964C37C08A38C01E");
+            entity.HasKey(e => e.Idvehicle).HasName("PK__Vehicle__964C37C0BE7A7C91");
 
             entity.ToTable("Vehicle");
 
