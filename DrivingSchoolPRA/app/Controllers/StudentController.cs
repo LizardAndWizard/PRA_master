@@ -192,7 +192,7 @@ namespace app.Controllers
         }
 
         [HttpPut]
-        public ActionResult<StudentDto> UpdateStudent(int id, [FromBody] StudentDto studentDto)
+        public ActionResult<StudentDto> UpdateStudent(int id, [FromBody] UpdateStudentDto studentDto)
         {
             try
             {
@@ -202,8 +202,16 @@ namespace app.Controllers
                 }
 
                 var student = _context.Students.FirstOrDefault(x => x.PersonId == id);
-                student.InstructorId = studentDto.InstructorId;
-                student.VehicleId = studentDto.VehicleId;
+
+                if (studentDto.InstructorId != null)
+                {
+                    student.InstructorId = studentDto.InstructorId;
+                }
+
+                if (studentDto.VehicleId != null)
+                {
+                    student.VehicleId = studentDto.VehicleId;
+                }
 
                 _context.SaveChanges();
 
