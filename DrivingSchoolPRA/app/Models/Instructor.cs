@@ -17,5 +17,7 @@ public partial class Instructor
 
     public virtual ICollection<Rezervation> Rezervations { get; } = new List<Rezervation>();
 
+    public virtual ICollection<Student> Students { get; } = new List<Student>();
+
     public virtual ICollection<Vehicle> Vehicles { get; } = new List<Vehicle>();
 }

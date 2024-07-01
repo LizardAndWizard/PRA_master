@@ -11,6 +11,8 @@ public partial class Request
 
     public int InstructorId { get; set; }
 
+    public int VehicleId { get; set; }
+
     public int StateId { get; set; }
 
     public virtual Instructor Instructor { get; set; } = null!;
@@ -18,4 +20,6 @@ public partial class Request
     public virtual State State { get; set; } = null!;
 
     public virtual Student Student { get; set; } = null!;
+
+    public virtual Vehicle Vehicle { get; set; } = null!;
 }

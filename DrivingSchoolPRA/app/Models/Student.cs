@@ -9,9 +9,13 @@ public partial class Student
 
     public int PersonId { get; set; }
 
+    public int? InstructorId { get; set; }
+
     public int? VehicleId { get; set; }
 
     public int? HoursDriven { get; set; }
+
+    public virtual Instructor? Instructor { get; set; }
 
     public virtual Person Person { get; set; } = null!;
 

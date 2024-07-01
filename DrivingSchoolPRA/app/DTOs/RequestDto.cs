@@ -13,6 +13,9 @@ namespace app.DTOs
         public int InstructorId { get; set; }
 
         [Required]
+        public int VehicleId { get; set; }
+
+        [Required]
         public int StateId { get; set; }
     }
 }

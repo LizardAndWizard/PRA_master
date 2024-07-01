@@ -16,6 +16,8 @@ namespace app.DTOs
 
         public string Oib { get; set; } = null!;
 
+        public int? InstructorId { get; set; }
+
         public string Password { get; set; } = null!;
 
         public int? VehicleId { get; set; }

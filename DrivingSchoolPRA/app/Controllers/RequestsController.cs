@@ -2,6 +2,7 @@
 using app.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Identity.Client;
 using Microsoft.IdentityModel.Tokens;
 
 namespace app.Controllers
@@ -98,6 +99,49 @@ namespace app.Controllers
             catch (Exception ex)
             {
                 return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+            }
+        }
+
+        [HttpPut]
+        public ActionResult<RequestDto> UpdateRequest(int id, [FromBody] RequestDto requestDto)
+        {
+            try
+            {
+                if (!ModelState.IsValid)
+                {
+                    return BadRequest(ModelState);
+                }
+
+                var request = _context.Requests.FirstOrDefault(x => x.Idrequest == id);
+
+                request.StateId = requestDto.StateId;
+                request.InstructorId = requestDto.InstructorId;
+                request.StudentId = requestDto.StudentId;
+
+                _context.SaveChanges();
+
+                return Ok(requestDto);
+            }
+            catch (Exception e)
+            {
+                return StatusCode(500, e.Message);
+            }
+        }
+
+        [HttpDelete]
+        public ActionResult<RequestDto> UpdateRequest(int id)
+        {
+            try
+            {
+                var request = _context.Requests.FirstOrDefault(x => x.Idrequest == id);
+                _context.Requests.Remove(request);
+                _context.SaveChanges();
+
+                return Ok(request);
+            }
+            catch (Exception e)
+            {
+                return StatusCode(500, e.Message);
             }
         }
     }
