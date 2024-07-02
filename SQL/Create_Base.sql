@@ -1,4 +1,4 @@
-﻿create database PRA_Driving_School COLLATE Croatian_CI_AS
+﻿﻿create database PRA_Driving_School COLLATE Croatian_CI_AS
 go
 
 use PRA_Driving_School
@@ -220,14 +220,14 @@ values
 (13);
 go
 
-exec CreateVehicle 1, 6, 3, 1, 'C:\Users\Paulo\Desktop\PRASS\PRA_master\SQL\PRA_slike\Citroen_C3.jpg'
-exec CreateVehicle 4, 6, 4, 3, 'C:\Users\Paulo\Desktop\PRASS\PRA_master\SQL\PRA_slike\Fiat_500.jpg'
-exec CreateVehicle 6, 6, 6, 2, 'C:\Users\Paulo\Desktop\PRASS\PRA_master\SQL\PRA_slike\Honda_Civic.jpg'
-exec CreateVehicle 1, 4, 8, 2, 'C:\Users\Paulo\Desktop\PRASS\PRA_master\SQL\PRA_slike\Honda_CB1000R.jpg'
-exec CreateVehicle 5, 6, 9, 3, 'C:\Users\Paulo\Desktop\PRASS\PRA_master\SQL\PRA_slike\Tesla_Model_2.jpg'
-exec CreateVehicle 2, 6, 10, 3, 'C:\Users\Paulo\Desktop\PRASS\PRA_master\SQL\PRA_slike\VW_Beetle.jpg'
-exec CreateVehicle 3, 6, 11, 4, 'C:\Users\Paulo\Desktop\PRASS\PRA_master\SQL\PRA_slike\Chevy_Malibu.jpg'
-exec CreateVehicle 5, 6, 12, 5, 'C:\Users\Paulo\Desktop\PRASS\PRA_master\SQL\PRA_slike\Renault_Alpine.jpg'
+exec CreateVehicle 1, 6, 3, 1, '\Citroen_C3.jpg'
+exec CreateVehicle 4, 6, 4, 3, '\Fiat_500.jpg'
+exec CreateVehicle 6, 6, 6, 2, '\Honda_Civic.jpg'
+exec CreateVehicle 1, 4, 8, 2, '\Honda_CB1000R.jpg'
+exec CreateVehicle 5, 6, 9, 3, '\Tesla_Model_2.jpg'
+exec CreateVehicle 2, 6, 10, 3, '\VW_Beetle.jpg'
+exec CreateVehicle 3, 6, 11, 4, '\Chevy_Malibu.jpg'
+exec CreateVehicle 5, 6, 12, 5, '\Renault_Alpine.jpg'
 go
 
 insert into Student(OIB, PersonID, InstructorID, VehicleID, HoursDriven)
