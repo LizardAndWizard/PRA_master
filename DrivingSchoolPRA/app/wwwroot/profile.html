@@ -55,7 +55,7 @@
     const hoursElement = document.createElement('p');
     hoursElement.id = 'hours';
 
-    let instructorID = 0
+    let currentStudent = null
 
     const ratingButton = document.getElementById('rate-btn')
     ratingButton.className = 'hidden'
@@ -68,7 +68,6 @@
 
     displayNavbar()
     constructLoadingElement()
-    populateModalWithInstructorData()
 
     $.ajax({
         method: "GET",
@@ -76,13 +75,29 @@
         contentType: "application/json",
     })
         .done(function (data) {
-            displayUserData(data)
-            console.log(data)
-            instructorID = data.instructorId
+            currentStudent = data
+            displayUserData(currentStudent)
+            if (currentStudent.instructorId != null) {
+                fetchInstruktor(currentStudent.instructorId)
+            }
         })
         .fail(function (err) {
             alert(err.responseText);
         });
+
+    function fetchInstruktor(id) {
+        $.ajax({
+            method: "GET",
+            url: "http://localhost:5290/api/Instructor/" + id,
+            contentType: "application/json",
+        })
+            .done(function (data) {
+                populateModalWithInstructorData(data)
+            })
+            .fail(function (err) {
+                alert(err.responseText);
+            });
+    }
 
     function displayNavbar() {
         const navbar = document.getElementById("navbar")
@@ -145,12 +160,12 @@
         userContainer.appendChild(container);
     }
 
-    function populateModalWithInstructorData() {
+    function populateModalWithInstructorData(data) {
         const contentHeader = document.querySelector(".modal-content__header");
         contentHeader.replaceChildren();
 
         const instructorNameElement = document.createElement('span')
-        instructorNameElement.innerHTML = 'test name'
+        instructorNameElement.innerHTML = `${data.firstName} ${data.lastname}`
 
         const vehicles = document.createElement('p')
         vehicles.innerHTML = 'Honda Civic'
@@ -228,7 +243,7 @@
         const reviewComment = document.getElementById('comment-area')
         const reviewBody = {
             studentOIB: oib,
-            instructorId: instructorID,
+            instructorId: currentStudent.instructorId,
             grade: chozenRating,
             comment: reviewComment.value
         }
@@ -240,6 +255,7 @@
         })
             .done(function (data) {
                 console.log(data)
+                alert('Rating successfully submitted: ' + chozenRating)
             })
             .fail(function (err) {
                 alert(err.responseText);
@@ -247,7 +263,7 @@
     }
 
     function showRatingButton(hoursDriven) {
-        if (hoursDriven >= 30) {
+        if (currentStudent.instructorId != null && hoursDriven >= 30) {
             ratingButton.classList.remove('hidden');
         }
     }
