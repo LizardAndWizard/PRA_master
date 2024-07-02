@@ -81,9 +81,7 @@
         .done(function (data) {
             currentStudent = data;
             displayUserData(currentStudent);
-            if (currentStudent.instructorId != null) {
-                fetchInstruktor(currentStudent.instructorId);
-            }
+            fetchInstruktor(1);
         })
         .fail(function (err) {
             alert(err.responseText);
@@ -127,7 +125,6 @@
     }
 
     function displayUserData(data) {
-        console.log(data);
         userContainer.replaceChildren();
         userNameElement.innerHTML = data.firstName + " " + data.lastname;
         userEmailElement.innerHTML = data.email;
@@ -249,7 +246,7 @@
         const reviewComment = document.getElementById("comment-area");
         const reviewBody = {
             studentOIB: oib,
-            instructorId: currentStudent.instructorId,
+            instructorId: 1,
             grade: chozenRating,
             comment: reviewComment.value,
         };
@@ -269,7 +266,7 @@
     }
 
     function showRatingButton(hoursDriven) {
-        if (currentStudent.instructorId != null && hoursDriven >= 30) {
+        if (hoursDriven >= 30) {
             ratingButton.classList.remove("hidden");
         }
     }
