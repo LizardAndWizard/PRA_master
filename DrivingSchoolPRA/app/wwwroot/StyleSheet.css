@@ -229,14 +229,14 @@ nav {
 }
 
 .appointment {
+    display: flex;
+    flex-direction: column;
     min-height: 100%;
     background-color: #eff6ff;
     padding: 12px;
 }
 
     .appointment span {
-        display: flex;
-        flex-direction: column;
         color: #1d4ed8;
         font-weight: bold;
         margin-bottom: 12px;
