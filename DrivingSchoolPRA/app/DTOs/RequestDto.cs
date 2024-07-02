@@ -6,16 +6,14 @@ namespace app.DTOs
     {
         public int Idrequest { get; set; }
 
-        [Required]
         public string StudentId { get; set; } = null!;
 
-        [Required]
+        public string? StudentName { get; set; }
+
         public int InstructorId { get; set; }
 
-        [Required]
         public int VehicleId { get; set; }
 
-        [Required]
         public int StateId { get; set; }
     }
 }

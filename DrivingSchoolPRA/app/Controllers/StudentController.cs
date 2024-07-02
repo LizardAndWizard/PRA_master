@@ -78,7 +78,7 @@ namespace app.Controllers
             }
         }
 
-        private static StudentDto MapStudentToDto(Student student)
+        public static StudentDto MapStudentToDto(Student student)
         {
             var studentDto = new StudentDto 
             {

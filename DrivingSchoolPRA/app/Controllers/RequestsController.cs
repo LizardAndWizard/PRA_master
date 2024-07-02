@@ -2,6 +2,7 @@
 using app.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Identity.Client;
 using Microsoft.IdentityModel.Tokens;
 
@@ -33,9 +34,11 @@ namespace app.Controllers
                 var requestsDto = requests.Select(request => new RequestDto
                 {
                     Idrequest = request.Idrequest,
-                    StudentId= request.StudentId,
-                    InstructorId= request.InstructorId,
-                    StateId= request.StateId,
+                    StudentId = request.StudentId,
+                    InstructorId = request.InstructorId, 
+                    VehicleId = request.VehicleId,
+                    StateId = request.StateId,
+                    StudentName = GetStudentName(request.StudentId, _context)
                 });
 
                 return Ok(requestsDto);
@@ -45,7 +48,13 @@ namespace app.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
             }
         }
-        
+
+        private static string GetStudentName(string studentId, PraDrivingSchoolContext context)
+        {
+            var student = context.Students.Include(s => s.Person).FirstOrDefault(x => x.Oib == studentId);
+            return $"{student.Person.FirstName} {student.Person.Lastname}"; 
+        }
+
         [HttpGet("instructor/{id}")]
         public ActionResult<IEnumerable<RequestDto>> GetForInstructor(int id)
         {
@@ -61,9 +70,11 @@ namespace app.Controllers
                 var requestsDto = requests.Select(request => new RequestDto
                 {
                     Idrequest = request.Idrequest,
-                    StudentId= request.StudentId,
-                    InstructorId= request.InstructorId,
-                    StateId= request.StateId,
+                    StudentId = request.StudentId,
+                    InstructorId = request.InstructorId,
+                    VehicleId = request.VehicleId,
+                    StateId = request.StateId,
+                    StudentName = GetStudentName(request.StudentId, _context)
                 });
 
                 return Ok(requestsDto);
@@ -89,12 +100,13 @@ namespace app.Controllers
                     StudentId = requestDto.StudentId,
                     InstructorId = requestDto.InstructorId,
                     StateId = requestDto.StateId,
+                    VehicleId = requestDto.VehicleId
                 };
 
                 _context.Add(request);
                 _context.SaveChanges();
 
-                return Ok();
+                return Ok(requestDto);
             }
             catch (Exception ex)
             {
@@ -115,8 +127,6 @@ namespace app.Controllers
                 var request = _context.Requests.FirstOrDefault(x => x.Idrequest == id);
 
                 request.StateId = requestDto.StateId;
-                request.InstructorId = requestDto.InstructorId;
-                request.StudentId = requestDto.StudentId;
 
                 _context.SaveChanges();
 
@@ -129,7 +139,7 @@ namespace app.Controllers
         }
 
         [HttpDelete]
-        public ActionResult<RequestDto> UpdateRequest(int id)
+        public ActionResult<RequestDto> DeleteRequest(int id)
         {
             try
             {
