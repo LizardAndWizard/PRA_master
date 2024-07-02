@@ -257,7 +257,6 @@
             data: JSON.stringify(reviewBody),
         })
             .done(function (data) {
-                console.log(data);
                 alert("Rating successfully submitted: " + chozenRating);
             })
             .fail(function (err) {
