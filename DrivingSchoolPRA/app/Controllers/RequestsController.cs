@@ -2,6 +2,7 @@
 using app.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Identity.Client;
 using Microsoft.IdentityModel.Tokens;
 
@@ -37,6 +38,7 @@ namespace app.Controllers
                     InstructorId = request.InstructorId, 
                     VehicleId = request.VehicleId,
                     StateId = request.StateId,
+                    StudentName = GetStudentName(request.StudentId, _context)
                 });
 
                 return Ok(requestsDto);
@@ -46,7 +48,13 @@ namespace app.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
             }
         }
-        
+
+        private static string GetStudentName(string studentId, PraDrivingSchoolContext context)
+        {
+            var student = context.Students.Include(s => s.Person).FirstOrDefault(x => x.Oib == studentId);
+            return $"{student.Person.FirstName} {student.Person.Lastname}"; 
+        }
+
         [HttpGet("instructor/{id}")]
         public ActionResult<IEnumerable<RequestDto>> GetForInstructor(int id)
         {
@@ -66,6 +74,7 @@ namespace app.Controllers
                     InstructorId = request.InstructorId,
                     VehicleId = request.VehicleId,
                     StateId = request.StateId,
+                    StudentName = GetStudentName(request.StudentId, _context)
                 });
 
                 return Ok(requestsDto);

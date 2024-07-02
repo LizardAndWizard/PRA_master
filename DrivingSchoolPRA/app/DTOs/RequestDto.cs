@@ -8,6 +8,8 @@ namespace app.DTOs
 
         public string StudentId { get; set; } = null!;
 
+        public string? StudentName { get; set; }
+
         public int InstructorId { get; set; }
 
         public int VehicleId { get; set; }
