@@ -93,18 +93,18 @@ nav {
     border-radius: 50%;
 }
 
-    .box {
-        display: flex;
-        flex-direction: column;
-        background-color: white;
-        height: 338px;
-        width: 356px;
-        border: 1px solid black;
-        border-radius: 8px;
-        margin: auto auto;
-        -webkit-box-shadow: 5px 5px 15px -8px #000000 !important;
-        box-shadow: 5px 5px 15px -8px #000000 !important;
-    }
+.box {
+    display: flex;
+    flex-direction: column;
+    background-color: white;
+    height: 338px;
+    width: 356px;
+    border: 1px solid black;
+    border-radius: 8px;
+    margin: auto auto;
+    -webkit-box-shadow: 5px 5px 15px -8px #000000 !important;
+    box-shadow: 5px 5px 15px -8px #000000 !important;
+}
 
     .box h1 {
         font-size: 28px;

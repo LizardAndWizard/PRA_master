@@ -109,8 +109,8 @@
 
       function acceptRequest(id) {
           const body = {
-              "stateId": 1,
-              studentId: "0"
+              stateId: 1,
+              studentId: "0",
           }
           $.ajax({
               method: "PUT",
@@ -119,7 +119,7 @@
               data: JSON.stringify(body)
           })
               .done(function (data) {
-                  console.log(data)
+                  fetchRequests(userID)
               })
               .fail(function (err) {
                   alert(err.responseText);

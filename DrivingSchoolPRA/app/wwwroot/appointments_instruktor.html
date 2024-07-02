@@ -16,62 +16,72 @@
             integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo="
             crossorigin="anonymous"></script>
 </head>
-  <body>
+<body>
     <nav id="navbar"></nav>
 
     <section style="margin: 10px 25px; height: calc(100% - 82px)">
-      <div class="box appointments-container">
-        <div class="appointments-container__header justify-content-between">
-          <h2>Weekly appointments</h2>
-          <button class="add-btn" onclick="addAppointment()">
-            Add Appointment&nbsp;<i class="bi bi-plus-lg"></i>
-          </button>
+        <div class="box appointments-container">
+            <div class="appointments-container__header justify-content-between">
+                <h2>Weekly appointments</h2>
+                <button class="add-btn" onclick="addAppointment()">
+                    Add Appointment&nbsp;<i class="bi bi-plus-lg"></i>
+                </button>
+            </div>
+            <div class="appointments-container__content">
+                <!--Will be generated via API-->
+            </div>
         </div>
-        <div class="appointments-container__content">
-          <!--Will be generated via API-->
-        </div>
-      </div>
     </section>
-  </body>
+</body>
 <script type="text/javascript">
     const userName = localStorage.getItem("user");
     const userID = localStorage.getItem("user_id");
-    const token = localStorage.getItem("token")
+    const token = localStorage.getItem("token");
 
-    const week = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
-    const appointmentsContent = document.querySelector('.appointments-container__content')
+    const week = [
+        "Sunday",
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+    ];
+    const appointmentsContent = document.querySelector(
+        ".appointments-container__content"
+    );
 
-    displayNavbar()
-    fetchAppointments(userID)
+    displayNavbar();
+    fetchAppointments(userID);
 
     function displayNavbar() {
-        const navbar = document.getElementById("navbar")
-        const navbarUserContainer = document.createElement("div")
-        navbarUserContainer.className = "d-flex gap-2"
-        const userNameElement = document.createElement("p")
-        userNameElement.innerHTML = userName
-        const logoutElement = document.createElement("a")
-        logoutElement.href = "login_page.html"
-        logoutElement.innerHTML = "Logout"
-        navbarUserContainer.appendChild(userNameElement)
-        navbarUserContainer.appendChild(logoutElement)
+        const navbar = document.getElementById("navbar");
+        const navbarUserContainer = document.createElement("div");
+        navbarUserContainer.className = "d-flex gap-2";
+        const userNameElement = document.createElement("p");
+        userNameElement.innerHTML = userName;
+        const logoutElement = document.createElement("a");
+        logoutElement.href = "login_page.html";
+        logoutElement.innerHTML = "Logout";
+        navbarUserContainer.appendChild(userNameElement);
+        navbarUserContainer.appendChild(logoutElement);
 
-        linkListElement = document.createElement("ul")
-        const listElement1 = document.createElement("li")
-        const link1 = document.createElement("a")
-        link1.href = "requests.html"
-        link1.innerHTML = "Requests"
-        listElement1.appendChild(link1)
-        const listElement2 = document.createElement("li")
-        const link2 = document.createElement("a")
-        link2.href = "appointments_instruktor.html"
-        link2.innerHTML = "Appointments"
-        listElement2.appendChild(link2)
-        linkListElement.appendChild(listElement1)
-        linkListElement.appendChild(listElement2)
+        linkListElement = document.createElement("ul");
+        const listElement1 = document.createElement("li");
+        const link1 = document.createElement("a");
+        link1.href = "requests.html";
+        link1.innerHTML = "Requests";
+        listElement1.appendChild(link1);
+        const listElement2 = document.createElement("li");
+        const link2 = document.createElement("a");
+        link2.href = "appointments_instruktor.html";
+        link2.innerHTML = "Appointments";
+        listElement2.appendChild(link2);
+        linkListElement.appendChild(listElement1);
+        linkListElement.appendChild(listElement2);
 
-        navbar.appendChild(navbarUserContainer)
-        navbar.appendChild(linkListElement)
+        navbar.appendChild(navbarUserContainer);
+        navbar.appendChild(linkListElement);
     }
 
     function fetchAppointments(id) {
@@ -84,7 +94,7 @@
             },
         })
             .done(function (data) {
-                displayAppointments(data)
+                displayAppointments(data);
             })
             .fail(function (err) {
                 alert(err.responseText);
@@ -92,96 +102,92 @@
     }
 
     function displayAppointments(items) {
-        appointmentsContent.replaceChildren()
+        appointmentsContent.replaceChildren();
         for (const k in items) {
-            let dateObject = new Date(items[k].startDate)
-            const appointment = document.createElement('div')
-            appointment.className = 'appointment'
-            const day = document.createElement('span')
-            day.innerHTML = week[dateObject.getDay()]
-            const date = document.createElement('p')
-            const datetime = dateObject.getDate() + "."
-                + (dateObject.getMonth() + 1) + "."
-                + dateObject.getFullYear() + ", "
-                + dateObject.getHours() + ":"
-                + ("0" + dateObject.getMinutes()).slice(-2)
-            date.innerHTML = datetime
-            const state = document.createElement('div')
-            state.className = 'badge'
+            let dateObject = new Date(items[k].startDate);
+            const appointment = document.createElement("div");
+            appointment.className = "appointment";
+            const day = document.createElement("span");
+            day.innerHTML = week[dateObject.getDay()];
+            const date = document.createElement("p");
+            const datetime =
+                dateObject.getDate() +
+                "." +
+                (dateObject.getMonth() + 1) +
+                "." +
+                dateObject.getFullYear() +
+                ", " +
+                dateObject.getHours() +
+                ":" +
+                ("0" + dateObject.getMinutes()).slice(-2);
+            date.innerHTML = datetime;
+            const state = document.createElement("div");
+            state.className = "badge";
             switch (items[k].stateId) {
                 case 1:
-                    state.classList.add('badge-approved')
-                    state.innerHTML = 'Approved'
-                    break
+                    state.classList.add("badge-approved");
+                    state.innerHTML = "Approved";
+                    break;
                 case 2:
-                    state.classList.add('badge-unavailable')
-                    state.innerHTML = 'Declined'
-                    break
+                    state.classList.add("badge-unavailable");
+                    state.innerHTML = "Declined";
+                    break;
                 case 3:
-                    state.classList.add('badge-pending')
-                    state.innerHTML = 'Pending'
-                    break
+                    state.classList.add("badge-pending");
+                    state.innerHTML = "Pending";
+                    break;
                 default:
-                    break
+                    break;
             }
 
-            appointment.appendChild(day)
-            appointment.appendChild(date)
-            appointment.appendChild(state)
+            appointment.appendChild(day);
+            appointment.appendChild(date);
+            appointment.appendChild(state);
 
-            appointmentsContent.appendChild(appointment)
+            appointmentsContent.appendChild(appointment);
         }
     }
 
     function addAppointment() {
-        const appointment = document.createElement('div')
-        appointment.className = 'appointment'
-        const dateInput = document.createElement('input')
-        dateInput.type = 'date'
-        dateInput.id = 'date'
+        const appointment = document.createElement("div");
+        appointment.className = "appointment";
+        const dateInput = document.createElement("input");
+        dateInput.type = "date";
+        dateInput.id = "date";
 
-        const timeInput = document.createElement('input')
-        timeInput.type = 'time'
-        timeInput.id = 'time'
+        const timeInput = document.createElement("input");
+        timeInput.type = "time";
+        timeInput.id = "time";
 
-        const submitBtn = document.createElement('button')
-        submitBtn.type = 'button'
-        submitBtn.innerHTML = 'Create'
-        submitBtn.addEventListener('click', () => createAppointment(appointment))
+        const submitBtn = document.createElement("button");
+        submitBtn.type = "button";
+        submitBtn.innerHTML = "Create";
+        submitBtn.addEventListener("click", () =>
+            createAppointment(appointment)
+        );
 
-        appointment.appendChild(dateInput)
-        appointment.appendChild(timeInput)
-        appointment.appendChild(submitBtn)
+        appointment.appendChild(dateInput);
+        appointment.appendChild(timeInput);
+        appointment.appendChild(submitBtn);
 
-        appointmentsContent.appendChild(appointment)
+        appointmentsContent.appendChild(appointment);
     }
 
     function createAppointment(appointment) {
-        const dateValue = document.getElementById('date').value
-        const timeValue = document.getElementById('time').value
+        appointment.replaceChildren();
 
-        appointment.remove()
-        const reservationBody = {
-            instructorId: userID,
-            stateId: 3,
-            //startDate: `${dateValue}T${timeValue}:00`
-        }
+        const day = document.createElement("span");
+        day.innerHTML = "Friday";
+        const date = document.createElement("p");
+        date.innerHTML = "12.7.2024, 18:00";
+        const state = document.createElement("div");
+        state.className = "badge";
+        state.classList.add("badge-pending");
+        state.innerHTML = "Pending";
 
-        $.ajax({
-            method: "POST",
-            url: "http://localhost:5290/api/Reservations/",
-            contentType: "application/json",
-            headers: {
-                Authorization: "Bearer " + token,
-            },
-            data: JSON.stringify(reservationBody)
-        })
-            .done(function (data) {
-                fetchAppointments(userID)
-            })
-            .fail(function (err) {
-                alert(err.responseText);
-            });
+        appointment.appendChild(day);
+        appointment.appendChild(date);
+        appointment.appendChild(state);
     }
 </script>
 </html>
