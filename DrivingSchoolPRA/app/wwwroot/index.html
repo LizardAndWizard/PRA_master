@@ -62,7 +62,7 @@
     );
 
     let selectedVehicle = null
-
+    let currentStudent = null
     let instructorList = [];
 
     const ratingFilterElement = document.getElementById("rating-filter-input");
@@ -70,6 +70,7 @@
     const requestDialog = document.getElementById("request-dialog");
 
     displayNavbar()
+    fetchStudent(userID)
     fetchInstructorList();
 
     function displayNavbar() {
@@ -136,6 +137,20 @@
         }
         const newInstructorList = instructorList.filter((e) => e.rating == rating);
         displayInstructorList(newInstructorList);
+    }
+
+    function fetchStudent(id) {
+        $.ajax({
+            method: "GET",
+            url: "http://localhost:5290/api/Student/" + id,
+            contentType: "application/json",
+        })
+            .done(function (data) {
+                currentStudent = data
+            })
+            .fail(function (err) {
+                alert(err.responseText);
+            });
     }
 
     function fetchInstructorList() {
@@ -283,13 +298,13 @@
             fullStarIcon.classList.add("bi-star-fill");
             emptyStarIcon.classList.add("bi");
             emptyStarIcon.classList.add("bi-star");
-            if (i <= numStars) {
+            if (i <= Math.floor(numStars)) {
                 ratingContainer.appendChild(fullStarIcon);
             } else {
                 ratingContainer.appendChild(emptyStarIcon);
             }
         }
-        ratingContainer.innerHTML += `(${numStars})`;
+        ratingContainer.innerHTML += `(${Math.floor(numStars)})`;
     }
 
     function changeVehicle(vehicles, currentVehicle) {
@@ -317,10 +332,16 @@
     }
 
     function sendRequest(id) {
+        if (currentStudent.instructorId != null) {
+            alert('You already have an instructor')
+            return
+        }
         const requestBody = {
             studentId: userOIB,
-            instructorId: id
-        }
+            instructorId: id,
+            vehicleId: selectedVehicle.idvehicle,
+            stateId: 3
+    }
         $.ajax({
             method: "POST",
             url: "http://localhost:5290/api/Requests",
@@ -331,7 +352,7 @@
             data: JSON.stringify(requestBody)
         })
             .done(function (data) {
-                console.log(data)
+                alert('Request successfully sent')
             })
             .fail(function (err) {
                 alert(err.responseText);
