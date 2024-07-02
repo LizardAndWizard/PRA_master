@@ -16,14 +16,14 @@
             integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo="
             crossorigin="anonymous"></script>
 </head>
-  <body>
+<body>
     <nav id="navbar"></nav>
 
     <!-- Request Modal -->
     <div class="modal fade" id="request-popup" aria-hidden="true">
-      <div class="modal-dialog" id="request-dialog">
-        <!--Will be generated via API-->
-      </div>
+        <div class="modal-dialog" id="request-dialog">
+            <!--Will be generated via API-->
+        </div>
     </div>
 
     <div class="container d-flex flex-column" id="instructor-container">
@@ -33,10 +33,11 @@
                    id="name-filter-input"
                    placeholder="Filter by name..."
                    style="width: 196px"
-                   oninput="filterByName()"/>
+                   oninput="filterByName()" />
             <div>
                 <label for="rating-filter-input">Filter by rating:</label>
-                <select id="rating-filter-input" onchange="filterByRating()">
+                <select id="rating-filter-input"
+                        onchange="filterByRating()">
                     <option value="show all">show all</option>
                     <option value="0">0 stars</option>
                     <option value="1">1 star</option>
@@ -47,63 +48,71 @@
                 </select>
             </div>
         </div>
-        <div id="instructor-card-container" class="container d-flex flex-column"></div>
+        <div id="instructor-card-container"
+             class="container d-flex flex-column"></div>
         <!-- Instructor cards will be placed here via API -->
     </div>
 </body>
 <script type="text/javascript">
     const loginToken = localStorage.getItem("token");
     const userName = localStorage.getItem("user");
+    const userID = localStorage.getItem("user_id");
+    const userOIB = localStorage.getItem("user_OIB");
     const fetchInstructorListUrl = "http://localhost:5290/api/Instructor";
     const instructorCardContainerElement = document.getElementById(
         "instructor-card-container"
     );
 
+    let selectedVehicle = null;
+    let currentStudent = null;
     let instructorList = [];
 
-    const ratingFilterElement = document.getElementById("rating-filter-input");
+    const ratingFilterElement = document.getElementById(
+        "rating-filter-input"
+    );
     const nameFilterElement = document.getElementById("name-filter-input");
     const requestDialog = document.getElementById("request-dialog");
 
-    displayNavbar()
+    displayNavbar();
+    fetchStudent(userID);
     fetchInstructorList();
 
     function displayNavbar() {
-        const navbar = document.getElementById("navbar")
-        const navbarUserContainer = document.createElement("div")
-        navbarUserContainer.className = "d-flex gap-2"
-        const userNameElement = document.createElement("p")
-        userNameElement.innerHTML = userName
-        const logoutElement = document.createElement("a")
-        logoutElement.href = "login_page.html"
-        logoutElement.innerHTML = "Logout"
-        navbarUserContainer.appendChild(userNameElement)
-        navbarUserContainer.appendChild(logoutElement)
+        const navbar = document.getElementById("navbar");
+        const navbarUserContainer = document.createElement("div");
+        navbarUserContainer.className = "d-flex gap-2";
+        const userNameElement = document.createElement("p");
+        userNameElement.innerHTML = userName;
+        const logoutElement = document.createElement("a");
+        logoutElement.href = "login_page.html";
+        logoutElement.innerHTML = "Logout";
+        navbarUserContainer.appendChild(userNameElement);
+        navbarUserContainer.appendChild(logoutElement);
 
-        linkListElement = document.createElement("ul")
-        const listElement1 = document.createElement("li")
-        const link1 = document.createElement("a")
-        link1.href = "profile.html"
-        link1.innerHTML = "Profile"
-        listElement1.appendChild(link1)
-        const listElement2 = document.createElement("li")
-        const link2 = document.createElement("a")
-        link2.href = "appointments_polaznik.html"
-        link2.innerHTML = "Appointments"
-        listElement2.appendChild(link2)
-        linkListElement.appendChild(listElement1)
-        linkListElement.appendChild(listElement2)
-        navbar.appendChild(navbarUserContainer)
-        navbar.appendChild(linkListElement)
+        linkListElement = document.createElement("ul");
+        const listElement1 = document.createElement("li");
+        const link1 = document.createElement("a");
+        link1.href = "profile.html";
+        link1.innerHTML = "Profile";
+        listElement1.appendChild(link1);
+        const listElement2 = document.createElement("li");
+        const link2 = document.createElement("a");
+        link2.href = "appointments_polaznik.html";
+        link2.innerHTML = "Appointments";
+        listElement2.appendChild(link2);
+        linkListElement.appendChild(listElement1);
+        linkListElement.appendChild(listElement2);
+        navbar.appendChild(navbarUserContainer);
+        navbar.appendChild(linkListElement);
     }
 
     function constructLoadingElement() {
-        const container = document.createElement('div');
+        const container = document.createElement("div");
         container.className = "d-flex gap-2 align-self-center";
 
         const loadingText = document.createElement("p");
         loadingText.className = "mt-5";
-        loadingText.innerHTML = "Loading..."
+        loadingText.innerHTML = "Loading...";
 
         const loadingCircle = document.createElement("span");
         loadingCircle.className = "loader mt-5";
@@ -130,12 +139,28 @@
             displayInstructorList(instructorList);
             return;
         }
-        const newInstructorList = instructorList.filter((e) => e.rating == rating);
+        const newInstructorList = instructorList.filter(
+            (e) => e.rating == rating
+        );
         displayInstructorList(newInstructorList);
     }
 
+    function fetchStudent(id) {
+        $.ajax({
+            method: "GET",
+            url: "http://localhost:5290/api/Student/" + id,
+            contentType: "application/json",
+        })
+            .done(function (data) {
+                currentStudent = data;
+            })
+            .fail(function (err) {
+                alert(err.responseText);
+            });
+    }
+
     function fetchInstructorList() {
-        constructLoadingElement()
+        constructLoadingElement();
         $.ajax({
             method: "GET",
             url: fetchInstructorListUrl,
@@ -164,6 +189,7 @@
         })
             .done(function (data) {
                 displayRequestDialog(data);
+                instructorID = data.id;
             })
             .fail(function (err) {
                 alert(err.responseText);
@@ -185,24 +211,48 @@
         const contentHeader = document.createElement("div");
         contentHeader.className = "modal-content__header";
 
+        selectedVehicle = item.vehicles[0];
+
         const infoSectionElement = document.createElement("div");
         infoSectionElement.className = "info";
 
         const nameElement = document.createElement("span");
-        const vehicleListElement = document.createElement("p");
         const emailElement = document.createElement("p");
+        const selectedVehicleElement = document.createElement("p");
+        selectedVehicleElement.className = "selected-vehicle";
 
         nameElement.innerHTML = item.firstName + " " + item.lastname;
-        vehicleListElement.innerHTML = JSON.stringify(item.vehicles)
         emailElement.innerHTML = item.email;
+        selectedVehicleElement.innerHTML = `${selectedVehicle.brand} ${selectedVehicle.model}`;
 
         infoSectionElement.appendChild(nameElement);
-        infoSectionElement.appendChild(vehicleListElement);
         infoSectionElement.appendChild(emailElement);
+        infoSectionElement.appendChild(selectedVehicleElement);
 
-        // TODO: Sloziti da se prikazuje lista vozila (nekako)
         const pictureSectionElement = document.createElement("div");
         pictureSectionElement.className = "picture";
+        const vehiclePicture = document.createElement("img");
+        vehiclePicture.className = "vehicle-picture";
+        vehiclePicture.src = `data:image/png;base64,${item.vehicles[0].picture}`;
+
+        const changePictureButtonRight = document.createElement("button");
+
+        if (item.vehicles.length > 1) {
+            const changePictureButtonIconRight =
+                document.createElement("i");
+            changePictureButtonIconRight.className =
+                "bi bi-caret-right-fill";
+            changePictureButtonIconRight.addEventListener("click", () =>
+                changeVehicle(item.vehicles, selectedVehicle)
+            );
+            changePictureButtonRight.appendChild(
+                changePictureButtonIconRight
+            );
+        }
+
+        pictureSectionElement.appendChild(vehiclePicture);
+        if (item.vehicles.length > 1)
+            pictureSectionElement.appendChild(changePictureButtonRight);
 
         contentHeader.appendChild(infoSectionElement);
         contentHeader.appendChild(pictureSectionElement);
@@ -212,6 +262,9 @@
 
         const brElement = document.createElement("br");
         const requestBtnElement = document.createElement("button");
+        requestBtnElement.addEventListener("click", () =>
+            sendRequest(item.id)
+        );
         requestBtnElement.innerHTML = "Request";
 
         contentBox.appendChild(contentHeader);
@@ -226,7 +279,10 @@
         instructorNameElement.innerHTML = `${item.firstName} ${item.lastname}`;
         const instructorCarElement = document.createElement("p");
         if (item.vehicles.length > 0) {
-            instructorCarElement.innerHTML = `Driving: ${item.vehicles[0].brand} ${item.vehicles[0].model}`;
+            instructorCarElement.innerHTML = "Driving: ";
+            for (const k in item.vehicles) {
+                instructorCarElement.innerHTML += `|${item.vehicles[k].brand} ${item.vehicles[k].model}| `;
+            }
         }
         const infoSectionElement = document.createElement("div");
         infoSectionElement.appendChild(instructorNameElement);
@@ -239,7 +295,10 @@
         const instructorCardElement = document.createElement("div");
         instructorCardElement.className = "instructor-card";
         instructorCardElement.setAttribute("data-bs-toggle", "modal");
-        instructorCardElement.setAttribute("data-bs-target", "#request-popup");
+        instructorCardElement.setAttribute(
+            "data-bs-target",
+            "#request-popup"
+        );
         instructorCardElement.addEventListener("click", () =>
             fetchInstructor(item.id)
         );
@@ -256,18 +315,64 @@
             fullStarIcon.classList.add("bi-star-fill");
             emptyStarIcon.classList.add("bi");
             emptyStarIcon.classList.add("bi-star");
-            if (i <= numStars) {
+            if (i <= Math.floor(numStars)) {
                 ratingContainer.appendChild(fullStarIcon);
             } else {
                 ratingContainer.appendChild(emptyStarIcon);
             }
         }
-        ratingContainer.innerHTML += `(${numStars})`;
+        ratingContainer.innerHTML += `(${Math.floor(numStars)})`;
     }
 
-    function displayInstructorRating() {
-        // Wait for a field in Student API
+    function changeVehicle(vehicles, currentVehicle) {
+        if (currentVehicle !== null) {
+            for (const k in vehicles) {
+                if (vehicles[k].picture === currentVehicle.picture) {
+                    if (parseInt(k) + 1 > vehicles.length - 1) {
+                        currentVehicle = vehicles[0];
+                    } else {
+                        currentVehicle = vehicles[parseInt(k) + 1];
+                    }
+                    const picture =
+                        document.querySelector(".vehicle-picture");
+                    picture.src = `data:image/png;base64,${currentVehicle.picture}`;
+                    const text =
+                        document.querySelector(".selected-vehicle");
+                    text.innerHTML = `${currentVehicle.brand} ${currentVehicle.model}`;
+                    selectedVehicle = currentVehicle;
+                    return;
+                }
+            }
+        }
     }
 
+    function sendRequest(id) {
+        if (currentStudent.instructorId != null) {
+            alert("You already have an instructor");
+            return;
+        }
+        const requestBody = {
+            studentId: userOIB,
+            instructorId: id,
+            vehicleId: selectedVehicle.idvehicle,
+            stateId: 3,
+            studentName: "Pero Perić",
+        };
+        $.ajax({
+            method: "POST",
+            url: "http://localhost:5290/api/Requests",
+            contentType: "application/json",
+            headers: {
+                Authorization: "Bearer " + loginToken,
+            },
+            data: JSON.stringify(requestBody),
+        })
+            .done(function (data) {
+                alert("Request successfully sent");
+            })
+            .fail(function (err) {
+                alert(err.responseText);
+            });
+    }
 </script>
 </html>

@@ -252,7 +252,7 @@ namespace app.Controllers
                     Brand = vehicle.Model.Brand.Name,
                     Category = vehicle.Category.Name,
                     Colour = vehicle.Colour.Name,
-                    Picture = null //vehicle.Picture
+                    Picture = vehicle.Picture
                 }).ToList();
             }
             else

@@ -1,54 +1,37 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
+<head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Requests</title>
-    <link
-      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
-      rel="stylesheet"
-      integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH"
-      crossorigin="anonymous"
-    />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+          rel="stylesheet"
+          integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH"
+          crossorigin="anonymous" />
     <link rel="stylesheet" href="StyleSheet.css" />
-    <script
-      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
-      integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
-      crossorigin="anonymous"
-    ></script>
-  </head>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+            integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+            crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"
+            integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo="
+            crossorigin="anonymous"></script>
+</head>
   <body>
     <nav id="navbar"></nav>
 
     <section class="container request-container">
-      <h1>Request List</h1>
-      <div class="request-card box">
-        <span>John Doe</span>
-        <div class="request-card__actions">
-          <button class="accept-btn">Accept</button>
-          <button class="decline-btn">Decline</button>
-        </div>
-      </div>
-      <div class="request-card box">
-        <span>John Doe</span>
-        <div class="request-card__actions">
-          <button class="accept-btn">Accept</button>
-          <button class="decline-btn">Decline</button>
-        </div>
-      </div>
-      <div class="request-card box">
-        <span>John Doe</span>
-        <div class="request-card__actions">
-          <button class="accept-btn">Accept</button>
-          <button class="decline-btn">Decline</button>
-        </div>
-      </div>
+        <h1>Request List</h1>
+      <!--Requests are generated via API-->
     </section>
   </body>
   <script type="text/javascript">
       const userName = localStorage.getItem("user");
+      const userID = localStorage.getItem("user_id");
+
+      const requestContainer = document.querySelector('.request-container')
 
       displayNavbar()
+      fetchRequests(userID)
 
       function displayNavbar() {
           const navbar = document.getElementById("navbar")
@@ -78,6 +61,69 @@
 
           navbar.appendChild(navbarUserContainer)
           navbar.appendChild(linkListElement)
+      }
+
+      function fetchRequests(id) {
+          $.ajax({
+              method: "GET",
+              url: "http://localhost:5290/api/Requests/instructor/" + id,
+              contentType: "application/json",
+          })
+              .done(function (data) {
+                  requestContainer.replaceChildren()
+                  displayRequests(data)
+              })
+              .fail(function (err) {
+                  alert(err.responseText);
+              });
+      }
+
+      function displayRequests(items) {
+          const header = document.createElement('h1')
+          header.innerHTML = 'Request List'
+          requestContainer.appendChild(header)
+          for (const k in items) {
+              if (items[k].stateId != 3) continue;
+              const card = document.createElement('div')
+              card.className = 'request-card box'
+              const studentName = document.createElement('span')
+              studentName.innerHTML = items[k].studentName
+              const cardActions = document.createElement('div')
+              cardActions.className = 'request-card__actions'
+              const acceptBtn = document.createElement('button')
+              acceptBtn.className = 'accept-btn'
+              acceptBtn.innerHTML = 'Accept'
+              acceptBtn.addEventListener('click', () => acceptRequest(items[k].idrequest))
+              const declineBtn = document.createElement('button')
+              declineBtn.className = 'decline-btn'
+              declineBtn.innerHTML = 'Decline'
+
+              card.appendChild(studentName)
+              cardActions.appendChild(acceptBtn)
+              cardActions.appendChild(declineBtn)
+              card.appendChild(cardActions)
+
+              requestContainer.appendChild(card)
+          }
+      }
+
+      function acceptRequest(id) {
+          const body = {
+              stateId: 1,
+              studentId: "0",
+          }
+          $.ajax({
+              method: "PUT",
+              url: "http://localhost:5290/api/Requests/?id=" + id,
+              contentType: "application/json",
+              data: JSON.stringify(body)
+          })
+              .done(function (data) {
+                  fetchRequests(userID)
+              })
+              .fail(function (err) {
+                  alert(err.responseText);
+              });
       }
   </script>
 </html>

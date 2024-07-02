@@ -75,19 +75,22 @@ nav {
         padding: 12px;
     }
 
+    .modal-content__header button {
+        color: gray !important;
+        background-color: white !important;
+        width: 20px !important;
+        padding-left: 0 !important;
+    }
+
 #rating-dialog .modal-content__header {
     flex-direction: column;
     text-align: center;
 }
 
-.modal-content__header .picture {
-    display: flex;
-    background-color: #b0b0b0;
-    color: #646464;
+.modal-content__header .picture img {
+    width: 80px;
+    height: 80px;
     border-radius: 50%;
-    width: 100px;
-    align-items: center;
-    justify-content: center;
 }
 
 .box {
@@ -226,14 +229,14 @@ nav {
 }
 
 .appointment {
+    display: flex;
+    flex-direction: column;
     min-height: 100%;
     background-color: #eff6ff;
     padding: 12px;
 }
 
     .appointment span {
-        display: flex;
-        flex-direction: column;
         color: #1d4ed8;
         font-weight: bold;
         margin-bottom: 12px;

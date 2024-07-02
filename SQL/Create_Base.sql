@@ -1,4 +1,4 @@
-﻿create database PRA_Driving_School COLLATE Croatian_CI_AS
+﻿﻿create database PRA_Driving_School COLLATE Croatian_CI_AS
 go
 
 use PRA_Driving_School
